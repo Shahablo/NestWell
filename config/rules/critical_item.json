@@ -1,0 +1,22 @@
+{
+  "key": "critical_item",
+  "version": "0.1.0",
+  "description": "A critical item on a scored screen is at or above the instrument's critical_item_min_score. Creates one Urgent item in every case (FR-30) and the screening service renders the locked emergency instruction before any other content. When sharing is withheld, the item text is governed by the FR-30a policy flag; no score or item text is carried.",
+  "author": "engineer draft",
+  "approved_by": null,
+  "effective_from": "2026-01-01T00:00:00.000Z",
+  "trigger": "screen_scored",
+  "conditions": {
+    "all": [
+      { "field": "screen.critical_item_hit", "op": "eq", "value": true }
+    ]
+  },
+  "action": {
+    "type": "create_queue_item",
+    "queue_key": "urgent",
+    "instrument_key": null,
+    "note": "critical safety item positive",
+    "open_clinical_flag": true
+  },
+  "placeholder": true
+}

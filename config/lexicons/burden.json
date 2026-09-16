@@ -1,0 +1,19 @@
+{
+  "key": "burden",
+  "version": "0.1.0",
+  "author": "engineer draft",
+  "approved_by": null,
+  "purpose": "FR-12 deny-list. No streaks, scores, badges, or missed-check-in language anywhere a patient can read. Linted over content, UI strings, and docs.",
+  "entries": [
+    { "term": "streak", "term_class": "gamification" },
+    { "term": "streaks", "term_class": "gamification" },
+    { "term": "missed", "term_class": "guilt" },
+    { "term": "badge", "term_class": "gamification" },
+    { "term": "badges", "term_class": "gamification" },
+    { "term": "keep it up", "term_class": "cheerleading" },
+    { "term": "don't forget", "term_class": "nagging" },
+    { "term": "you forgot", "term_class": "nagging" },
+    { "term": "level up", "term_class": "gamification" },
+    { "term": "points earned", "term_class": "gamification" }
+  ]
+}

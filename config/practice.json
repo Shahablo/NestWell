@@ -1,0 +1,73 @@
+{
+  "id": "practice-riverbend",
+  "name": "Riverbend OB-GYN (synthetic)",
+  "jurisdiction": "OH",
+  "state_review_memo_ref": null,
+  "state_review_memo_date": null,
+  "timezone": "America/New_York",
+  "named_contact": {
+    "role": "coordinator",
+    "display_name": "Care coordinator (NOT YET ASSIGNED)",
+    "phone": "555-010-0100",
+    "phone_is_placeholder": true,
+    "coverage_hours_label": "Monday to Friday, 8 a.m. to 5 p.m. (placeholder)"
+  },
+  "after_hours_phone": "555-010-0199",
+  "after_hours_phone_is_placeholder": true,
+  "staff_users": [
+    {
+      "id": "coord-1",
+      "role": "coordinator",
+      "permissions": ["on_call"],
+      "display_name": "Care coordinator (synthetic)",
+      "employer": "practice"
+    },
+    {
+      "id": "ob-1",
+      "role": "clinician",
+      "permissions": ["config_approver", "content_approver", "on_call"],
+      "display_name": "OB clinician (synthetic)",
+      "employer": "practice"
+    },
+    {
+      "id": "budget-1",
+      "role": "budget_owner",
+      "permissions": [],
+      "display_name": "Practice budget owner (synthetic)",
+      "employer": "practice"
+    },
+    {
+      "id": "partner-1",
+      "role": "referral_partner",
+      "permissions": [],
+      "display_name": "Referral partner contact (synthetic)",
+      "employer": "partner"
+    }
+  ],
+  "referral_partners": [
+    {
+      "id": "bh-partner-1",
+      "name": "Behavioral health partner (NOT YET SECURED)",
+      "specialty": "Behavioral health",
+      "capacity_state": "unknown",
+      "typical_wait_days": null,
+      "accepted_insurance_types": ["commercial", "medicaid"],
+      "consented_fields_allowed": [
+        "display_name",
+        "preferred_name",
+        "locale",
+        "insurance_type",
+        "referral_reason",
+        "screen_result_if_shared"
+      ],
+      "secured": false
+    }
+  ],
+  "barrier_resources": {
+    "transport": null,
+    "childcare": null,
+    "phone_data": null,
+    "interpreter": null,
+    "cost": null
+  }
+}

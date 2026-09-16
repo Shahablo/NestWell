@@ -1,0 +1,26 @@
+{
+  "key": "barrier_item",
+  "version": "0.1.0",
+  "description": "A barrier answer (any option tagged barrier_transport, barrier_childcare, barrier_phone_data, barrier_interpreter, or barrier_cost). Creates one typed Follow-through item per barrier and shows the practice's resource item, NOT YET PROVIDED until supplied (FR-36a). Closes only with an outcome.",
+  "author": "engineer draft",
+  "approved_by": null,
+  "effective_from": "2026-01-01T00:00:00.000Z",
+  "trigger": "checkin_submitted",
+  "conditions": {
+    "all": [
+      {
+        "field": "response_tags",
+        "op": "any_of",
+        "value": ["barrier_transport", "barrier_childcare", "barrier_phone_data", "barrier_interpreter", "barrier_cost"]
+      }
+    ]
+  },
+  "action": {
+    "type": "create_queue_item",
+    "queue_key": "follow_through",
+    "instrument_key": null,
+    "note": "Barrier reported on a check-in",
+    "open_clinical_flag": false
+  },
+  "placeholder": true
+}

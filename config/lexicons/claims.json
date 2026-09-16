@@ -1,0 +1,25 @@
+{
+  "key": "claims",
+  "version": "0.1.0",
+  "author": "engineer draft",
+  "approved_by": null,
+  "purpose": "SR-07 deny-list. No regulatory, efficacy, or positioning claims in content, UI, scripts, docs, or the alternatives worksheet. Counsel reviews the list before the first practice demo.",
+  "entries": [
+    { "term": "first-of-its-kind", "term_class": "positioning" },
+    { "term": "first of its kind", "term_class": "positioning" },
+    { "term": "better than", "term_class": "comparative" },
+    { "term": "guaranteed", "term_class": "efficacy" },
+    { "term": "proven", "term_class": "efficacy" },
+    { "term": "clinically proven", "term_class": "efficacy" },
+    { "term": "HIPAA compliant", "term_class": "regulatory" },
+    { "term": "HIPAA-compliant", "term_class": "regulatory" },
+    { "term": "FDA cleared", "term_class": "regulatory" },
+    { "term": "FDA-cleared", "term_class": "regulatory" },
+    { "term": "FDA approved", "term_class": "regulatory" },
+    { "term": "non-device", "term_class": "regulatory" },
+    { "term": "decides nothing", "term_class": "regulatory_minimization" },
+    { "term": "just shows information", "term_class": "regulatory_minimization" },
+    { "term": "only static content", "term_class": "regulatory_minimization" },
+    { "term": "only baby-focused", "term_class": "comparative" }
+  ]
+}

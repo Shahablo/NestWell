@@ -1,0 +1,119 @@
+{
+  "version": "0.1.0",
+  "items": [
+    {
+      "key": "early_visit",
+      "version": "0.1.0",
+      "title_content_id": "careplan.early_visit.title",
+      "body_content_id": "careplan.early_visit.body",
+      "owner_role": "coordinator",
+      "due_day": 21,
+      "tags": ["recovery"],
+      "sets": ["standard", "loss", "nicu", "trauma"]
+    },
+    {
+      "key": "comprehensive_visit",
+      "version": "0.1.0",
+      "title_content_id": "careplan.comprehensive_visit.title",
+      "body_content_id": "careplan.comprehensive_visit.body",
+      "owner_role": "coordinator",
+      "due_day": 42,
+      "tags": ["recovery"],
+      "sets": ["standard", "loss", "nicu", "trauma"]
+    },
+    {
+      "key": "mood_checkin_explained",
+      "version": "0.1.0",
+      "title_content_id": "careplan.mood_checkin_explained.title",
+      "body_content_id": "careplan.mood_checkin_explained.body",
+      "owner_role": "clinician",
+      "due_day": 14,
+      "tags": ["mood"],
+      "sets": ["standard", "loss", "nicu", "trauma"]
+    },
+    {
+      "key": "feeding_support",
+      "version": "0.1.0",
+      "title_content_id": "careplan.feeding_support.title",
+      "body_content_id": "careplan.feeding_support.body",
+      "owner_role": "coordinator",
+      "due_day": 7,
+      "tags": ["feeding", "infant"],
+      "sets": ["standard", "nicu", "trauma"]
+    },
+    {
+      "key": "newborn_visit",
+      "version": "0.1.0",
+      "title_content_id": "careplan.newborn_visit.title",
+      "body_content_id": "careplan.newborn_visit.body",
+      "owner_role": "coordinator",
+      "due_day": 5,
+      "tags": ["newborn_visit", "infant"],
+      "sets": ["standard", "nicu", "trauma"]
+    },
+    {
+      "key": "pelvic_floor_recovery",
+      "version": "0.1.0",
+      "title_content_id": "careplan.pelvic_floor_recovery.title",
+      "body_content_id": "careplan.pelvic_floor_recovery.body",
+      "owner_role": "clinician",
+      "due_day": 42,
+      "tags": ["recovery"],
+      "sets": ["standard", "loss", "nicu", "trauma"]
+    },
+    {
+      "key": "contraception_conversation",
+      "version": "0.1.0",
+      "title_content_id": "careplan.contraception_conversation.title",
+      "body_content_id": "careplan.contraception_conversation.body",
+      "owner_role": "clinician",
+      "due_day": 42,
+      "tags": ["recovery"],
+      "sets": ["standard", "loss", "nicu", "trauma"]
+    },
+    {
+      "key": "blood_pressure_check",
+      "version": "0.1.0",
+      "title_content_id": "careplan.blood_pressure_check.title",
+      "body_content_id": "careplan.blood_pressure_check.body",
+      "owner_role": "clinician",
+      "due_day": 7,
+      "tags": ["recovery", "symptoms"],
+      "sets": ["standard", "loss", "nicu", "trauma"]
+    },
+    {
+      "key": "transition_primary_care",
+      "version": "0.1.0",
+      "title_content_id": "careplan.transition_primary_care.title",
+      "body_content_id": "careplan.transition_primary_care.body",
+      "owner_role": "coordinator",
+      "due_day": 84,
+      "tags": ["general"],
+      "sets": ["standard", "loss", "nicu", "trauma"]
+    },
+    {
+      "key": "mental_health_connection",
+      "version": "0.1.0",
+      "title_content_id": "careplan.mental_health_connection.title",
+      "body_content_id": "careplan.mental_health_connection.body",
+      "owner_role": "clinician",
+      "due_day": null,
+      "tags": ["mood"],
+      "sets": ["standard", "loss", "nicu", "trauma"]
+    }
+  ],
+  "visits": [
+    {
+      "type": "early_postpartum",
+      "day": 21,
+      "purpose": "Early postpartum visit: how your body is healing, blood pressure if advised, and your questions",
+      "bring": ["Your questions", "A list of any medicines you take", "Your insurance card"]
+    },
+    {
+      "type": "comprehensive",
+      "day": 42,
+      "purpose": "Comprehensive postpartum visit: full check of your recovery, mood, birth control, and next steps",
+      "bring": ["Your questions", "A list of any medicines you take", "Your insurance card", "Your primary care contact if you have one"]
+    }
+  ]
+}

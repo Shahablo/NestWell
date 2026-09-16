@@ -1,0 +1,21 @@
+{
+  "key": "reassurance",
+  "version": "0.1.0",
+  "author": "engineer draft",
+  "approved_by": null,
+  "purpose": "FR-15 and AI-07 deny-list. The product never tells her she is fine and never characterizes her answers. Every closing statement must pass this list.",
+  "entries": [
+    { "term": "nothing needs follow-up", "term_class": "false_reassurance" },
+    { "term": "nothing needs follow up", "term_class": "false_reassurance" },
+    { "term": "you are doing fine", "term_class": "false_reassurance" },
+    { "term": "you're doing fine", "term_class": "false_reassurance" },
+    { "term": "all clear", "term_class": "false_reassurance" },
+    { "term": "looks fine", "term_class": "false_reassurance" },
+    { "term": "no concerns", "term_class": "false_reassurance" },
+    { "term": "normal", "term_class": "characterization" },
+    { "term": "nothing to worry about", "term_class": "false_reassurance" },
+    { "term": "don't worry", "term_class": "false_reassurance" },
+    { "term": "you are fine", "term_class": "false_reassurance" },
+    { "term": "everything is fine", "term_class": "false_reassurance" }
+  ]
+}

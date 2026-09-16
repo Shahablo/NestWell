@@ -1,0 +1,22 @@
+{
+  "key": "free_text_present",
+  "version": "0.1.0",
+  "description": "Any patient-entered free text (check-in free text, saved question, usefulness comment, sensitive-preferences text). Handled by freetext.ts in the same transaction as the save (FR-17): one Needs-review item on the same-business-day target; when free_text_urgency_scan is on and the emergency lexicon matches, one Urgent item in its place plus help_requested with source lexicon_match. This rule documents the routing for the inventory and harness; the service, not the rule engine, performs it.",
+  "author": "engineer draft",
+  "approved_by": null,
+  "effective_from": "2026-01-01T00:00:00.000Z",
+  "trigger": "checkin_submitted",
+  "conditions": {
+    "all": [
+      { "field": "free_text_entered", "op": "eq", "value": true }
+    ]
+  },
+  "action": {
+    "type": "create_queue_item",
+    "queue_key": "needs_review",
+    "instrument_key": null,
+    "note": "Patient wrote a note; read by a person on the same-business-day target",
+    "open_clinical_flag": false
+  },
+  "placeholder": true
+}

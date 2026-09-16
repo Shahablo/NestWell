@@ -1,0 +1,86 @@
+{
+  "version": "0.1.0",
+  "approved_by": null,
+  "reword": {
+    "careplan.early_visit.title": "Your first visit after birth",
+    "careplan.early_visit.body": "See your practice in the first three weeks after birth. The clinician checks how you are healing and answers your questions. Bring your questions and a list of your medicines. If you need a ride or an interpreter, tell the practice first.",
+    "careplan.comprehensive_visit.title": "Your six-week visit",
+    "careplan.comprehensive_visit.body": "A full visit about six weeks after birth. It covers how you are healing, your mood, birth control if you want it, and what comes next. Bring your questions, your medicine list, and your insurance card. Ask about anything still open.",
+    "careplan.mood_checkin_explained.title": "The mood questions, explained",
+    "careplan.mood_checkin_explained.body": "Around day 14 you get a short set of mood questions. It is a standard set your care team uses. It is not a diagnosis. You choose who sees the answers, and you can skip it. A clinician reviews the answers and may call you.",
+    "careplan.feeding_support.title": "Help with feeding",
+    "careplan.feeding_support.body": "However you feed your baby, help is there if it is hard. Your practice can connect you with feeding support in the first week. Sore nipples, low supply, or bottle trouble are all good reasons to ask. Tell your coordinator.",
+    "careplan.newborn_visit.title": "Your baby's first visit",
+    "careplan.newborn_visit.body": "Your baby's first visit with a pediatric clinician is usually in the first week. It is separate from your own visit. No pediatric clinician yet? Tell your coordinator. If getting there is hard, say so and the practice will help.",
+    "careplan.pelvic_floor_recovery.title": "Healing your pelvic floor",
+    "careplan.pelvic_floor_recovery.body": "The muscles that hold up your bladder and bowel take time to recover. Leaking urine, pain, or pressure are common and worth raising. Your clinician can talk about exercises or a referral to pelvic floor therapy. Ask at your six-week visit or sooner.",
+    "careplan.contraception_conversation.title": "Talking about birth control",
+    "careplan.contraception_conversation.body": "If you want it, your clinician will talk about birth control at your six-week visit. You can bring it up earlier. There are many options, and the choice is yours. Bring your questions.",
+    "careplan.blood_pressure_check.title": "Checking your blood pressure",
+    "careplan.blood_pressure_check.body": "If your clinician asked you to check your blood pressure, do it in the first week. Your practice tells you when and how. A bad headache, vision changes, or swelling of your face or hands mean call right away.",
+    "careplan.transition_primary_care.title": "Moving to your regular clinician",
+    "careplan.transition_primary_care.body": "At twelve weeks your care moves to your primary care clinician. The practice confirms who that is and what is still open. No primary care clinician yet? Tell your coordinator so one can be found.",
+    "careplan.mental_health_connection.title": "Connecting with mental health support",
+    "careplan.mental_health_connection.body": "If you and your clinician agree more support would help, the practice can refer you to a mental health partner. The practice tracks the referral until an appointment has happened. Ask any time. If you cannot wait, call or text 988."
+  },
+  "summary_narrative": {
+    "dana:week9": "Episode week 9. Care plan: early postpartum visit completed; comprehensive postpartum visit completed; mood check-in explained completed; feeding support completed; newborn visit completed; pelvic floor recovery open; birth control conversation completed; transition to primary care open. Visits: early postpartum visit completed; comprehensive visit completed. No referrals. No callbacks. No open queue items. Saved questions: none.",
+    "dana:week12": "Episode week 12. Care plan: all items completed except transition to primary care, which is open for the transition page. Visits: early postpartum visit completed; comprehensive visit completed. No referrals. No callbacks. No open queue items. Saved questions: none. Content referenced: Transition to primary care.",
+    "dana:on_demand": "On-demand summary. Care plan items open: pelvic floor recovery; transition to primary care. Visits: early postpartum visit completed; comprehensive visit scheduled. No referrals. No callbacks. No open queue items. Saved questions: none.",
+    "priya:week9": "Episode week 9. Care plan: early postpartum visit completed; comprehensive postpartum visit completed; mental health connection open; transition to primary care open. Queue items: one follow-through item resolved; one needs-review item resolved. Referral to Behavioral health partner (NOT YET SECURED): appointment completed. Visits: early postpartum visit completed; comprehensive visit completed. Saved questions: none.",
+    "priya:week12": "Episode week 12. Care plan: mental health connection completed; transition to primary care open. Referral to Behavioral health partner (NOT YET SECURED): appointment completed. Queue items: none open. Visits: early postpartum visit completed; comprehensive visit completed. Saved questions: none. Content referenced: Mental health connection; Transition to primary care.",
+    "priya:on_demand": "On-demand summary. Queue items: one needs-review item acknowledged; one follow-through item open. Referral to Behavioral health partner (NOT YET SECURED): sent to partner. Visits: early postpartum visit scheduled. Care plan items open: mental health connection; comprehensive postpartum visit. Saved questions: none.",
+    "marisol:week9": "Episode week 9. Queue items: one urgent item resolved. Care plan: early postpartum visit completed; comprehensive postpartum visit completed; blood pressure check completed; transition to primary care open. Callbacks: none. Visits: early postpartum visit completed; comprehensive visit completed. Saved questions: none.",
+    "marisol:week12": "Episode week 12. Queue items: one urgent item resolved; none open. Care plan: transition to primary care open; all other items completed. Visits: early postpartum visit completed; comprehensive visit completed. Saved questions: none. Content referenced: Transition to primary care.",
+    "marisol:on_demand": "On-demand summary. Queue items: one urgent item, state and acknowledgment time shown in the structured section. Care plan items open: early postpartum visit; blood pressure check. Visits: early postpartum visit scheduled. No referrals. Saved questions: none.",
+    "elena:week9": "Episode week 9. Queue items: one sensitive-review item resolved; one follow-through item open. Care plan: early postpartum visit completed; comprehensive postpartum visit scheduled; mental health connection open; transition to primary care open. Referral to Behavioral health partner (NOT YET SECURED): appointment scheduled. Saved questions: none.",
+    "elena:week12": "Episode week 12. Queue items: none open. Care plan: mental health connection completed; transition to primary care open. Referral to Behavioral health partner (NOT YET SECURED): appointment completed. Visits: early postpartum visit completed; comprehensive visit completed. Saved questions: none. Content referenced: Transition to primary care.",
+    "elena:on_demand": "On-demand summary. Queue items: one sensitive-review item acknowledged. Care plan items open: early postpartum visit; mental health connection; transition to primary care. Referral: none yet. Visits: early postpartum visit scheduled. Saved questions: none.",
+    "keisha:week9": "Episode week 9. Queue items: one unreached item resolved; one follow-through item open. Care plan: early postpartum visit rescheduled; comprehensive postpartum visit scheduled; transition to primary care open. Visits: early postpartum visit rescheduled. No referrals. Saved questions: none.",
+    "keisha:week12": "Episode week 12. Queue items: one follow-through item resolved; none open. Care plan: early postpartum visit completed; comprehensive postpartum visit completed; transition to primary care open. Visits: early postpartum visit completed; comprehensive visit completed. Saved questions: none. Content referenced: Transition to primary care.",
+    "keisha:on_demand": "On-demand summary. Queue items: one unreached item open. Care plan items open: early postpartum visit; comprehensive postpartum visit; transition to primary care. Visits: early postpartum visit scheduled. No referrals. Saved questions: none.",
+    "lucia:week9": "Episode week 9. Queue items: one follow-through item resolved. Care plan: early postpartum visit completed; comprehensive postpartum visit scheduled; transition to primary care open. Visits: early postpartum visit completed; comprehensive visit scheduled. No referrals. Saved questions: none.",
+    "lucia:week12": "Episode week 12. Queue items: none open. Care plan: comprehensive postpartum visit completed; transition to primary care open. Visits: early postpartum visit completed; comprehensive visit completed. No referrals. Saved questions: none. Content referenced: Transition to primary care.",
+    "lucia:on_demand": "On-demand summary. Queue items: one follow-through item open. Care plan items open: early postpartum visit; comprehensive postpartum visit; transition to primary care. Visits: early postpartum visit scheduled. No referrals. Saved questions: none.",
+    "tamsin:week9": "Episode week 9. Queue items: several urgent items resolved; several needs-review items resolved; one needs-review item open. Callbacks: completed. Care plan: early postpartum visit completed; comprehensive postpartum visit completed; feeding support open; transition to primary care open. Saved questions: Visit logistics; Feeding; Recovery; Paperwork. Visits: early postpartum visit completed; comprehensive visit completed.",
+    "tamsin:week12": "Episode week 12. Queue items: none open. Care plan: feeding support completed; transition to primary care open. Saved questions: Visit logistics; Feeding; Recovery; Paperwork. Visits: early postpartum visit completed; comprehensive visit completed. Content referenced: Transition to primary care.",
+    "tamsin:on_demand": "On-demand summary. Queue items: urgent items resolved; needs-review items open and resolved as listed in the structured section. Callbacks: requested and completed. Care plan items open: comprehensive postpartum visit; feeding support; transition to primary care. Saved questions: Visit logistics; Feeding; Recovery; Paperwork."
+  },
+  "question_organizer": {
+    "tamsin": [
+      {
+        "title": "Visit logistics",
+        "question_texts": [
+          "Can I bring both babies to my six-week visit?",
+          "Is there parking near the clinic entrance?",
+          "How long will the six-week visit take?"
+        ]
+      },
+      {
+        "title": "Feeding",
+        "question_texts": [
+          "How do I pump while the babies are in the NICU?",
+          "Is it okay to mix formula and breast milk?"
+        ]
+      },
+      {
+        "title": "Recovery",
+        "question_texts": [
+          "When can I lift things heavier than the babies?",
+          "How long will my incision feel numb?",
+          "When can I start exercising again?"
+        ]
+      },
+      {
+        "title": "Paperwork",
+        "question_texts": [
+          "Who signs my leave paperwork?",
+          "Do I need a separate referral for the pediatrician?"
+        ]
+      }
+    ]
+  },
+  "generic_fallback": "A plain-language version of this item is not available right now. The approved text is shown above. If you need help now, use your contact card or tap I need help now.",
+  "patient_label": "Written from your care team's approved materials. This is not medical advice. For urgent symptoms, call 911, or call the practice after-hours number on your contact card.",
+  "staff_label": "AI draft, not reviewed"
+}

@@ -1,0 +1,22 @@
+{
+  "key": "callback_requested",
+  "version": "0.1.0",
+  "description": "The patient answered yes to a call from the practice (tag callback_requested). Creates one Follow-through callback item; preferred windows apply (FR-21, FR-34). Closes only with an outcome.",
+  "author": "engineer draft",
+  "approved_by": null,
+  "effective_from": "2026-01-01T00:00:00.000Z",
+  "trigger": "checkin_submitted",
+  "conditions": {
+    "all": [
+      { "field": "response_tags", "op": "any_of", "value": ["callback_requested"] }
+    ]
+  },
+  "action": {
+    "type": "create_queue_item",
+    "queue_key": "follow_through",
+    "instrument_key": null,
+    "note": "Patient asked for a call from the practice",
+    "open_clinical_flag": false
+  },
+  "placeholder": true
+}

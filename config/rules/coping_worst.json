@@ -1,0 +1,22 @@
+{
+  "key": "coping_worst",
+  "version": "0.1.0",
+  "description": "Coping item at the worst option (tag coping_difficulty) on one check-in. The answer itself creates one Needs-review item; the instrument named in instrument_key is offered now or at the next check-in (FR-29). A decline is recorded on the same item.",
+  "author": "engineer draft",
+  "approved_by": null,
+  "effective_from": "2026-01-01T00:00:00.000Z",
+  "trigger": "checkin_submitted",
+  "conditions": {
+    "all": [
+      { "field": "response_tags", "op": "any_of", "value": ["coping_difficulty"] }
+    ]
+  },
+  "action": {
+    "type": "create_queue_item",
+    "queue_key": "needs_review",
+    "instrument_key": "epds",
+    "note": "reported difficulty coping",
+    "open_clinical_flag": true
+  },
+  "placeholder": true
+}

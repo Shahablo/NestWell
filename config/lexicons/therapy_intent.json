@@ -1,0 +1,20 @@
+{
+  "key": "therapy_intent",
+  "version": "0.1.0",
+  "author": "engineer draft",
+  "approved_by": null,
+  "purpose": "AI-06 and AI-15 therapy-intent list. A match in the AI prefilter renders the locked instruction with crisis line and named contact plus the pending sentence, creates one Needs-review item, and emits help_requested with source ai_prefilter. The emergency lexicon wins when both match.",
+  "entries": [
+    { "term": "can you help me cope", "term_class": "therapy_request" },
+    { "term": "help me cope", "term_class": "therapy_request" },
+    { "term": "talk me through", "term_class": "therapy_request" },
+    { "term": "what should I do about my feelings", "term_class": "therapy_request" },
+    { "term": "what should I do about how I feel", "term_class": "therapy_request" },
+    { "term": "am I depressed", "term_class": "diagnosis_request" },
+    { "term": "do I have postpartum depression", "term_class": "diagnosis_request" },
+    { "term": "is this anxiety", "term_class": "diagnosis_request" },
+    { "term": "how do I stop feeling", "term_class": "therapy_request" },
+    { "term": "tell me it will be okay", "term_class": "reassurance_request" },
+    { "term": "tell me I am okay", "term_class": "reassurance_request" }
+  ]
+}

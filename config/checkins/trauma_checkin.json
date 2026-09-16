@@ -1,0 +1,201 @@
+{
+  "key": "trauma_checkin",
+  "version": "0.1.0",
+  "set": "trauma",
+  "title_content_id": "checkin.trauma_checkin.title",
+  "items": [
+    {
+      "key": "urgent_symptoms",
+      "domain": "symptoms",
+      "prompt_content_id": "checkin.trauma_checkin.urgent_symptoms",
+      "response_type": "multi_tap",
+      "options": [
+        {
+          "value": "heavy_bleeding",
+          "label": "Bleeding that soaks a pad in an hour",
+          "rule_tags": [
+            "urgent_candidate"
+          ]
+        },
+        {
+          "value": "chest_breathing",
+          "label": "Chest pain or trouble breathing",
+          "rule_tags": [
+            "urgent_candidate"
+          ]
+        },
+        {
+          "value": "headache_vision",
+          "label": "A bad headache or changes in your vision",
+          "rule_tags": [
+            "urgent_candidate"
+          ]
+        },
+        {
+          "value": "fever",
+          "label": "A fever of 100.4 or higher",
+          "rule_tags": [
+            "urgent_candidate"
+          ]
+        },
+        {
+          "value": "leg_pain",
+          "label": "Pain or swelling in one leg",
+          "rule_tags": [
+            "urgent_candidate"
+          ]
+        },
+        {
+          "value": "thoughts_of_harm",
+          "label": "Thoughts of hurting yourself",
+          "rule_tags": [
+            "urgent_candidate"
+          ]
+        },
+        {
+          "value": "none",
+          "label": "None of these",
+          "rule_tags": [
+            "none"
+          ]
+        }
+      ],
+      "skippable": true,
+      "tags": [
+        "recovery",
+        "symptoms"
+      ]
+    },
+    {
+      "key": "coping",
+      "domain": "mood",
+      "prompt_content_id": "checkin.trauma_checkin.coping",
+      "response_type": "single_tap",
+      "options": [
+        {
+          "value": "coping",
+          "label": "I am coping",
+          "rule_tags": []
+        },
+        {
+          "value": "some_days_hard",
+          "label": "Some days are hard",
+          "rule_tags": [
+            "coping_difficulty_mild"
+          ]
+        },
+        {
+          "value": "not_coping",
+          "label": "I am not coping",
+          "rule_tags": [
+            "coping_difficulty"
+          ]
+        }
+      ],
+      "skippable": true,
+      "tags": [
+        "mood"
+      ]
+    },
+    {
+      "key": "barriers",
+      "domain": "barriers",
+      "prompt_content_id": "checkin.trauma_checkin.barriers",
+      "response_type": "single_tap",
+      "options": [
+        {
+          "value": "transport",
+          "label": "No ride to appointments",
+          "rule_tags": [
+            "barrier_transport"
+          ]
+        },
+        {
+          "value": "childcare",
+          "label": "No one to care for my children",
+          "rule_tags": [
+            "barrier_childcare"
+          ]
+        },
+        {
+          "value": "phone_data",
+          "label": "My phone or data plan is limited",
+          "rule_tags": [
+            "barrier_phone_data"
+          ]
+        },
+        {
+          "value": "interpreter",
+          "label": "I need an interpreter",
+          "rule_tags": [
+            "barrier_interpreter"
+          ]
+        },
+        {
+          "value": "cost",
+          "label": "The cost",
+          "rule_tags": [
+            "barrier_cost"
+          ]
+        },
+        {
+          "value": "no",
+          "label": "No",
+          "rule_tags": []
+        }
+      ],
+      "skippable": true,
+      "tags": [
+        "barriers"
+      ]
+    },
+    {
+      "key": "contact_preference",
+      "domain": "general",
+      "prompt_content_id": "checkin.trauma_checkin.contact_preference",
+      "response_type": "single_tap",
+      "options": [
+        {
+          "value": "call",
+          "label": "A phone call",
+          "rule_tags": [
+            "callback_requested"
+          ]
+        },
+        {
+          "value": "message",
+          "label": "A short message",
+          "rule_tags": []
+        },
+        {
+          "value": "not_now",
+          "label": "Not right now",
+          "rule_tags": []
+        }
+      ],
+      "skippable": true,
+      "tags": [
+        "general"
+      ]
+    },
+    {
+      "key": "free_text",
+      "domain": "general",
+      "prompt_content_id": "checkin.trauma_checkin.free_text",
+      "response_type": "free_text_optional",
+      "options": [],
+      "skippable": true,
+      "tags": [
+        "general"
+      ]
+    }
+  ],
+  "instrument_key": null,
+  "usefulness_item": false,
+  "visit_preparation": false,
+  "closing_statement_ids": {
+    "no_follow_up": "closing.no_follow_up",
+    "pending": "closing.pending"
+  },
+  "placeholder": true
+}

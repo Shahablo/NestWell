@@ -1,0 +1,22 @@
+{
+  "key": "coping_mild_twice",
+  "version": "0.1.0",
+  "description": "Coping item at the middle option on two consecutive check-ins — evaluated by the core with the field response_tags_consecutive, which holds the rule tags present on both this submission and the previous completed or partial check-in (tag coping_difficulty_mild). Offers the instrument now or at the next check-in (FR-29, placeholder).",
+  "author": "engineer draft",
+  "approved_by": null,
+  "effective_from": "2026-01-01T00:00:00.000Z",
+  "trigger": "checkin_submitted",
+  "conditions": {
+    "all": [
+      { "field": "response_tags_consecutive", "op": "any_of", "value": ["coping_difficulty_mild"] }
+    ]
+  },
+  "action": {
+    "type": "administer_screen",
+    "queue_key": null,
+    "instrument_key": "epds",
+    "note": "middle coping option on two consecutive check-ins",
+    "open_clinical_flag": false
+  },
+  "placeholder": true
+}

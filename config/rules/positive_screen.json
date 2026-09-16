@@ -1,0 +1,23 @@
+{
+  "key": "positive_screen",
+  "version": "0.1.0",
+  "description": "Screen score at or above the instrument's placeholder threshold. Creates one Needs-review item for the OB clinician, subject to the patient's sharing category (FR-06, FR-30): with nobody_yet no item is created and the practice sees only that a screen was completed.",
+  "author": "engineer draft",
+  "approved_by": null,
+  "effective_from": "2026-01-01T00:00:00.000Z",
+  "trigger": "screen_scored",
+  "conditions": {
+    "all": [
+      { "field": "screen.positive", "op": "eq", "value": true },
+      { "field": "patient.sharing_category", "op": "in", "value": ["clinician_only", "clinician_and_coordinator", "clinician_coordinator_partner"] }
+    ]
+  },
+  "action": {
+    "type": "create_queue_item",
+    "queue_key": "needs_review",
+    "instrument_key": null,
+    "note": "screen at or above placeholder threshold",
+    "open_clinical_flag": true
+  },
+  "placeholder": true
+}

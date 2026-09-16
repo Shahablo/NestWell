@@ -1,0 +1,37 @@
+[
+  { "queue_key": "urgent", "weekday": 1, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+  { "queue_key": "urgent", "weekday": 2, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+  { "queue_key": "urgent", "weekday": 3, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+  { "queue_key": "urgent", "weekday": 4, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+  { "queue_key": "urgent", "weekday": 5, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+
+  { "queue_key": "needs_review", "weekday": 1, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null },
+  { "queue_key": "needs_review", "weekday": 2, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null },
+  { "queue_key": "needs_review", "weekday": 3, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null },
+  { "queue_key": "needs_review", "weekday": 4, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null },
+  { "queue_key": "needs_review", "weekday": 5, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null },
+
+  { "queue_key": "follow_through", "weekday": 1, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+  { "queue_key": "follow_through", "weekday": 2, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+  { "queue_key": "follow_through", "weekday": 3, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+  { "queue_key": "follow_through", "weekday": 4, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+  { "queue_key": "follow_through", "weekday": 5, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+
+  { "queue_key": "unreached", "weekday": 1, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+  { "queue_key": "unreached", "weekday": 2, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+  { "queue_key": "unreached", "weekday": 3, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+  { "queue_key": "unreached", "weekday": 4, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+  { "queue_key": "unreached", "weekday": 5, "start": "08:00", "end": "17:00", "on_duty_user_id": "coord-1", "backup_user_id": null },
+
+  { "queue_key": "sensitive_review", "weekday": 1, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null },
+  { "queue_key": "sensitive_review", "weekday": 2, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null },
+  { "queue_key": "sensitive_review", "weekday": 3, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null },
+  { "queue_key": "sensitive_review", "weekday": 4, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null },
+  { "queue_key": "sensitive_review", "weekday": 5, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null },
+
+  { "queue_key": "summaries", "weekday": 1, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null },
+  { "queue_key": "summaries", "weekday": 2, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null },
+  { "queue_key": "summaries", "weekday": 3, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null },
+  { "queue_key": "summaries", "weekday": 4, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null },
+  { "queue_key": "summaries", "weekday": 5, "start": "08:00", "end": "17:00", "on_duty_user_id": "ob-1", "backup_user_id": null }
+]

@@ -1,0 +1,1152 @@
+[
+  {
+    "id": "checkin.day03.title",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Day 3 check-in",
+    "body": "Three days in. A few quick questions about you. You can skip any of them."
+  },
+  {
+    "id": "checkin.day03.urgent_symptoms",
+    "locale": "en",
+    "tags": [
+      "recovery",
+      "symptoms"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Any of these today?",
+    "body": "Any of these today?"
+  },
+  {
+    "id": "checkin.day03.coping",
+    "locale": "en",
+    "tags": [
+      "mood"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "How are you coping today?",
+    "body": "How are you coping today?"
+  },
+  {
+    "id": "checkin.day03.barriers",
+    "locale": "en",
+    "tags": [
+      "barriers"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Is anything making it hard to get care right now?",
+    "body": "Is anything making it hard to get care right now?"
+  },
+  {
+    "id": "checkin.day03.callback",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Would you like a call from the practice?",
+    "body": "Would you like a call from the practice?"
+  },
+  {
+    "id": "checkin.day03.free_text",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Anything else you want the practice to know? (optional)",
+    "body": "Anything else you want the practice to know? (optional)"
+  },
+  {
+    "id": "checkin.day07.title",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Day 7 check-in",
+    "body": "One week in. A few quick questions about you. You can skip any of them."
+  },
+  {
+    "id": "checkin.day07.urgent_symptoms",
+    "locale": "en",
+    "tags": [
+      "recovery",
+      "symptoms"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Any of these today?",
+    "body": "Any of these today?"
+  },
+  {
+    "id": "checkin.day07.coping",
+    "locale": "en",
+    "tags": [
+      "mood"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "How are you coping this week?",
+    "body": "How are you coping this week?"
+  },
+  {
+    "id": "checkin.day07.barriers",
+    "locale": "en",
+    "tags": [
+      "barriers"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Is anything making it hard to get care right now?",
+    "body": "Is anything making it hard to get care right now?"
+  },
+  {
+    "id": "checkin.day07.callback",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Would you like a call from the practice?",
+    "body": "Would you like a call from the practice?"
+  },
+  {
+    "id": "checkin.day07.free_text",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Anything else you want the practice to know? (optional)",
+    "body": "Anything else you want the practice to know? (optional)"
+  },
+  {
+    "id": "checkin.day14.title",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Day 14 check-in",
+    "body": "Two weeks in. A few quick questions, then a short set of mood questions. You can skip any of them."
+  },
+  {
+    "id": "checkin.day14.urgent_symptoms",
+    "locale": "en",
+    "tags": [
+      "recovery",
+      "symptoms"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Any of these today?",
+    "body": "Any of these today?"
+  },
+  {
+    "id": "checkin.day14.coping",
+    "locale": "en",
+    "tags": [
+      "mood"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "How are you coping this week?",
+    "body": "How are you coping this week?"
+  },
+  {
+    "id": "checkin.day14.barriers",
+    "locale": "en",
+    "tags": [
+      "barriers"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Is anything making it hard to get care right now?",
+    "body": "Is anything making it hard to get care right now?"
+  },
+  {
+    "id": "checkin.day14.callback",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Would you like a call from the practice?",
+    "body": "Would you like a call from the practice?"
+  },
+  {
+    "id": "checkin.day14.free_text",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Anything else you want the practice to know? (optional)",
+    "body": "Anything else you want the practice to know? (optional)"
+  },
+  {
+    "id": "checkin.day21.title",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Day 21 check-in",
+    "body": "Three weeks in. A few quick questions about you. You can skip any of them."
+  },
+  {
+    "id": "checkin.day21.urgent_symptoms",
+    "locale": "en",
+    "tags": [
+      "recovery",
+      "symptoms"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Any of these today?",
+    "body": "Any of these today?"
+  },
+  {
+    "id": "checkin.day21.coping",
+    "locale": "en",
+    "tags": [
+      "mood"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "How are you coping this week?",
+    "body": "How are you coping this week?"
+  },
+  {
+    "id": "checkin.day21.barriers",
+    "locale": "en",
+    "tags": [
+      "barriers"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Is anything making it hard to get to your visit?",
+    "body": "Is anything making it hard to get to your visit?"
+  },
+  {
+    "id": "checkin.day21.callback",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Would you like a call from the practice?",
+    "body": "Would you like a call from the practice?"
+  },
+  {
+    "id": "checkin.day21.free_text",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Anything else you want the practice to know? (optional)",
+    "body": "Anything else you want the practice to know? (optional)"
+  },
+  {
+    "id": "checkin.week06.title",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Week 6 check-in",
+    "body": "Six weeks in. A few quick questions, the mood questions again, and your visit prep. You can skip any of them."
+  },
+  {
+    "id": "checkin.week06.urgent_symptoms",
+    "locale": "en",
+    "tags": [
+      "recovery",
+      "symptoms"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Any of these today?",
+    "body": "Any of these today?"
+  },
+  {
+    "id": "checkin.week06.coping",
+    "locale": "en",
+    "tags": [
+      "mood"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "How are you coping these days?",
+    "body": "How are you coping these days?"
+  },
+  {
+    "id": "checkin.week06.barriers",
+    "locale": "en",
+    "tags": [
+      "barriers"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Is anything making it hard to get to your visit?",
+    "body": "Is anything making it hard to get to your visit?"
+  },
+  {
+    "id": "checkin.week06.callback",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Would you like a call from the practice?",
+    "body": "Would you like a call from the practice?"
+  },
+  {
+    "id": "checkin.week06.free_text",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Anything else you want the practice to know? (optional)",
+    "body": "Anything else you want the practice to know? (optional)"
+  },
+  {
+    "id": "checkin.week09.title",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Week 9 check-in",
+    "body": "Nine weeks in. A few quick questions about you and anything still open. You can skip any of them."
+  },
+  {
+    "id": "checkin.week09.urgent_symptoms",
+    "locale": "en",
+    "tags": [
+      "recovery",
+      "symptoms"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Any of these today?",
+    "body": "Any of these today?"
+  },
+  {
+    "id": "checkin.week09.coping",
+    "locale": "en",
+    "tags": [
+      "mood"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "How are you coping these days?",
+    "body": "How are you coping these days?"
+  },
+  {
+    "id": "checkin.week09.barriers",
+    "locale": "en",
+    "tags": [
+      "barriers"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Is anything making it hard to get care right now?",
+    "body": "Is anything making it hard to get care right now?"
+  },
+  {
+    "id": "checkin.week09.callback",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Would you like a call from the practice?",
+    "body": "Would you like a call from the practice?"
+  },
+  {
+    "id": "checkin.week09.free_text",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Anything else you want the practice to know? (optional)",
+    "body": "Anything else you want the practice to know? (optional)"
+  },
+  {
+    "id": "checkin.week12.title",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Week 12 check-in",
+    "body": "Twelve weeks in. This is the last scheduled check-in. A few quick questions, then your transition page. You can skip any of them."
+  },
+  {
+    "id": "checkin.week12.urgent_symptoms",
+    "locale": "en",
+    "tags": [
+      "recovery",
+      "symptoms"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Any of these today?",
+    "body": "Any of these today?"
+  },
+  {
+    "id": "checkin.week12.coping",
+    "locale": "en",
+    "tags": [
+      "mood"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "How are you coping these days?",
+    "body": "How are you coping these days?"
+  },
+  {
+    "id": "checkin.week12.barriers",
+    "locale": "en",
+    "tags": [
+      "barriers"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Is anything making it hard to get care right now?",
+    "body": "Is anything making it hard to get care right now?"
+  },
+  {
+    "id": "checkin.week12.callback",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Would you like a call from the practice?",
+    "body": "Would you like a call from the practice?"
+  },
+  {
+    "id": "checkin.week12.free_text",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Anything else you want the practice to know? (optional)",
+    "body": "Anything else you want the practice to know? (optional)"
+  },
+  {
+    "id": "checkin.loss_checkin.title",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Check-in",
+    "body": "A few short questions about you. Only what you want to answer. You can skip any of them."
+  },
+  {
+    "id": "checkin.loss_checkin.body_recovery",
+    "locale": "en",
+    "tags": [
+      "recovery"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "How is your body healing?",
+    "body": "How is your body healing?"
+  },
+  {
+    "id": "checkin.loss_checkin.urgent_symptoms",
+    "locale": "en",
+    "tags": [
+      "recovery",
+      "symptoms"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Any of these today?",
+    "body": "Any of these today?"
+  },
+  {
+    "id": "checkin.loss_checkin.coping",
+    "locale": "en",
+    "tags": [
+      "mood"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "How are you coping right now?",
+    "body": "How are you coping right now?"
+  },
+  {
+    "id": "checkin.loss_checkin.contact_preference",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "How would you like the practice to be in touch?",
+    "body": "How would you like the practice to be in touch?"
+  },
+  {
+    "id": "checkin.loss_checkin.free_text",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Anything else you want the practice to know? (optional)",
+    "body": "Anything else you want the practice to know? (optional)"
+  },
+  {
+    "id": "checkin.nicu_checkin.title",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Check-in",
+    "body": "A few quick questions about you. You can skip any of them."
+  },
+  {
+    "id": "checkin.nicu_checkin.urgent_symptoms",
+    "locale": "en",
+    "tags": [
+      "recovery",
+      "symptoms"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Any of these today?",
+    "body": "Any of these today?"
+  },
+  {
+    "id": "checkin.nicu_checkin.coping",
+    "locale": "en",
+    "tags": [
+      "mood"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "How are you coping right now?",
+    "body": "How are you coping right now?"
+  },
+  {
+    "id": "checkin.nicu_checkin.barriers",
+    "locale": "en",
+    "tags": [
+      "barriers"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Is anything making it hard to get care or get to the hospital?",
+    "body": "Is anything making it hard to get care or get to the hospital?"
+  },
+  {
+    "id": "checkin.nicu_checkin.callback",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Would you like a call from the practice?",
+    "body": "Would you like a call from the practice?"
+  },
+  {
+    "id": "checkin.nicu_checkin.free_text",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Anything else you want the practice to know? (optional)",
+    "body": "Anything else you want the practice to know? (optional)"
+  },
+  {
+    "id": "checkin.trauma_checkin.title",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Check-in",
+    "body": "A few quick questions about you today. Nothing here asks about the birth. You can skip any of them."
+  },
+  {
+    "id": "checkin.trauma_checkin.urgent_symptoms",
+    "locale": "en",
+    "tags": [
+      "recovery",
+      "symptoms"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Any of these today?",
+    "body": "Any of these today?"
+  },
+  {
+    "id": "checkin.trauma_checkin.coping",
+    "locale": "en",
+    "tags": [
+      "mood"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "How are you coping right now?",
+    "body": "How are you coping right now?"
+  },
+  {
+    "id": "checkin.trauma_checkin.barriers",
+    "locale": "en",
+    "tags": [
+      "barriers"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Is anything making it hard to get care right now?",
+    "body": "Is anything making it hard to get care right now?"
+  },
+  {
+    "id": "checkin.trauma_checkin.contact_preference",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "How would you like the practice to be in touch?",
+    "body": "How would you like the practice to be in touch?"
+  },
+  {
+    "id": "checkin.trauma_checkin.free_text",
+    "locale": "en",
+    "tags": [
+      "general"
+    ],
+    "status": "approved",
+    "version": "0.1.0",
+    "approver": "clinical-owner-placeholder",
+    "approved_at": "2026-01-01",
+    "tone_review_by": "tone-reviewer-placeholder",
+    "claims_checked_by": "engineer draft",
+    "locked": false,
+    "safety_critical": false,
+    "counsel_review_pending": false,
+    "placeholder": true,
+    "title": "Anything else you want the practice to know? (optional)",
+    "body": "Anything else you want the practice to know? (optional)"
+  }
+]

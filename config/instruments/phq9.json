@@ -1,0 +1,116 @@
+{
+  "key": "phq9",
+  "version": "0.1.0",
+  "name": "Patient Health Questionnaire-9",
+  "short_name": "PHQ-9",
+  "attribution": "Developed by Drs. Robert L. Spitzer, Janet B.W. Williams, Kurt Kroenke and colleagues, with an educational grant from Pfizer Inc. No permission required to reproduce, translate, display or distribute.",
+  "license_note": "Public domain. Item wording is unchanged. Threshold is a placeholder until the clinical owner confirms it (FR-28).",
+  "items": [
+    {
+      "key": "phq9_01",
+      "prompt": "Over the last 2 weeks, how often have you been bothered by: little interest or pleasure in doing things",
+      "options": [
+        { "label": "Not at all", "score": 0 },
+        { "label": "Several days", "score": 1 },
+        { "label": "More than half the days", "score": 2 },
+        { "label": "Nearly every day", "score": 3 }
+      ],
+      "critical": false
+    },
+    {
+      "key": "phq9_02",
+      "prompt": "Over the last 2 weeks, how often have you been bothered by: feeling down, depressed, or hopeless",
+      "options": [
+        { "label": "Not at all", "score": 0 },
+        { "label": "Several days", "score": 1 },
+        { "label": "More than half the days", "score": 2 },
+        { "label": "Nearly every day", "score": 3 }
+      ],
+      "critical": false
+    },
+    {
+      "key": "phq9_03",
+      "prompt": "Over the last 2 weeks, how often have you been bothered by: trouble falling or staying asleep, or sleeping too much",
+      "options": [
+        { "label": "Not at all", "score": 0 },
+        { "label": "Several days", "score": 1 },
+        { "label": "More than half the days", "score": 2 },
+        { "label": "Nearly every day", "score": 3 }
+      ],
+      "critical": false
+    },
+    {
+      "key": "phq9_04",
+      "prompt": "Over the last 2 weeks, how often have you been bothered by: feeling tired or having little energy",
+      "options": [
+        { "label": "Not at all", "score": 0 },
+        { "label": "Several days", "score": 1 },
+        { "label": "More than half the days", "score": 2 },
+        { "label": "Nearly every day", "score": 3 }
+      ],
+      "critical": false
+    },
+    {
+      "key": "phq9_05",
+      "prompt": "Over the last 2 weeks, how often have you been bothered by: poor appetite or overeating",
+      "options": [
+        { "label": "Not at all", "score": 0 },
+        { "label": "Several days", "score": 1 },
+        { "label": "More than half the days", "score": 2 },
+        { "label": "Nearly every day", "score": 3 }
+      ],
+      "critical": false
+    },
+    {
+      "key": "phq9_06",
+      "prompt": "Over the last 2 weeks, how often have you been bothered by: feeling bad about yourself, or that you are a failure or have let yourself or your family down",
+      "options": [
+        { "label": "Not at all", "score": 0 },
+        { "label": "Several days", "score": 1 },
+        { "label": "More than half the days", "score": 2 },
+        { "label": "Nearly every day", "score": 3 }
+      ],
+      "critical": false
+    },
+    {
+      "key": "phq9_07",
+      "prompt": "Over the last 2 weeks, how often have you been bothered by: trouble concentrating on things, such as reading the newspaper or watching television",
+      "options": [
+        { "label": "Not at all", "score": 0 },
+        { "label": "Several days", "score": 1 },
+        { "label": "More than half the days", "score": 2 },
+        { "label": "Nearly every day", "score": 3 }
+      ],
+      "critical": false
+    },
+    {
+      "key": "phq9_08",
+      "prompt": "Over the last 2 weeks, how often have you been bothered by: moving or speaking so slowly that other people could have noticed, or the opposite, being so fidgety or restless that you have been moving around a lot more than usual",
+      "options": [
+        { "label": "Not at all", "score": 0 },
+        { "label": "Several days", "score": 1 },
+        { "label": "More than half the days", "score": 2 },
+        { "label": "Nearly every day", "score": 3 }
+      ],
+      "critical": false
+    },
+    {
+      "key": "phq9_09",
+      "prompt": "Over the last 2 weeks, how often have you been bothered by: thoughts that you would be better off dead, or of hurting yourself in some way",
+      "options": [
+        { "label": "Not at all", "score": 0 },
+        { "label": "Several days", "score": 1 },
+        { "label": "More than half the days", "score": 2 },
+        { "label": "Nearly every day", "score": 3 }
+      ],
+      "critical": true
+    }
+  ],
+  "scoring": "sum",
+  "threshold_positive": 10,
+  "critical_item_min_score": 1,
+  "thresholds_confirmed_by": null,
+  "placeholder": true,
+  "framing_content_id": "screen.framing.phq9",
+  "loss_pathway_framing_content_id": "screen.framing.loss"
+}

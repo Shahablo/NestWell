@@ -1,0 +1,33 @@
+{
+  "name": "nestwell-prototype",
+  "private": true,
+  "version": "0.1.0",
+  "description": "NestWell postpartum follow-through prototype — synthetic data only, demonstration build",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "validate": "vitest run src/domain/config.test.ts src/domain/content.test.ts",
+    "lint:claims": "vitest run src/domain/lexicon.test.ts"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.3",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.3",
+    "vite-plugin-pwa": "^0.21.1",
+    "vitest": "^2.1.8"
+  }
+}

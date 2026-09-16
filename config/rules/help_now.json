@@ -1,0 +1,22 @@
+{
+  "key": "help_now",
+  "version": "0.1.0",
+  "description": "The patient tapped I need help now (source patient), or help was requested by a lexicon match, prefilter block, critical item, or rule. Renders the locked emergency instruction full screen with crisis line, after-hours number, named contact, and request a callback; creates one Urgent item (FR-21). No acknowledgment is required to leave the screen.",
+  "author": "engineer draft",
+  "approved_by": null,
+  "effective_from": "2026-01-01T00:00:00.000Z",
+  "trigger": "help_now",
+  "conditions": {
+    "all": [
+      { "field": "help.source", "op": "in", "value": ["patient", "lexicon_match", "ai_prefilter", "critical_item", "rule"] }
+    ]
+  },
+  "action": {
+    "type": "show_emergency_instruction",
+    "queue_key": "urgent",
+    "instrument_key": null,
+    "note": "I need help now",
+    "open_clinical_flag": true
+  },
+  "placeholder": true
+}

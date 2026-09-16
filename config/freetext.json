@@ -1,0 +1,9 @@
+{
+  "version": "0.1.0",
+  "free_text_urgency_scan": false,
+  "free_text_urgency_scan_set_by": null,
+  "ai_enabled": false,
+  "critical_item_overrides_sharing": true,
+  "critical_item_policy_set_by": null,
+  "screening_in_loss_status": "single_mood_item"
+}

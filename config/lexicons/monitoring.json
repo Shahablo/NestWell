@@ -1,0 +1,18 @@
+{
+  "key": "monitoring",
+  "version": "0.1.0",
+  "author": "engineer draft",
+  "approved_by": null,
+  "purpose": "FR-24 deny-list. The product never implies someone is watching when nobody is. Linted over content, UI strings, and docs.",
+  "entries": [
+    { "term": "monitored", "term_class": "implied_surveillance" },
+    { "term": "monitoring you", "term_class": "implied_surveillance" },
+    { "term": "watching", "term_class": "implied_surveillance" },
+    { "term": "24/7", "term_class": "implied_coverage" },
+    { "term": "always here", "term_class": "implied_coverage" },
+    { "term": "we'll know", "term_class": "implied_surveillance" },
+    { "term": "we will know", "term_class": "implied_surveillance" },
+    { "term": "around the clock", "term_class": "implied_coverage" },
+    { "term": "keeping an eye", "term_class": "implied_surveillance" }
+  ]
+}

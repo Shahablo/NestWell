@@ -1,0 +1,22 @@
+{
+  "key": "urgent_symptom",
+  "version": "0.1.0",
+  "description": "A check-in answer on the clinical owner's placeholder urgent-symptom list (any option tagged urgent_candidate). Renders the locked emergency instruction (FR-22) full screen before any other content and creates one Urgent item (FR-23). The AI layer is not called.",
+  "author": "engineer draft",
+  "approved_by": null,
+  "effective_from": "2026-01-01T00:00:00.000Z",
+  "trigger": "checkin_submitted",
+  "conditions": {
+    "all": [
+      { "field": "response_tags", "op": "any_of", "value": ["urgent_candidate"] }
+    ]
+  },
+  "action": {
+    "type": "show_emergency_instruction",
+    "queue_key": "urgent",
+    "instrument_key": null,
+    "note": "Urgent-symptom answer on the placeholder list",
+    "open_clinical_flag": true
+  },
+  "placeholder": true
+}

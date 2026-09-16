@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUncheckedIndexedAccess": false,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["vite/client", "vite-plugin-pwa/client", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "@domain/*": ["src/domain/*"],
+      "@ui/*": ["src/ui/*"],
+      "@seed/*": ["src/seed/*"],
+      "@config/*": ["config/*"],
+      "@content/*": ["content/*"]
+    }
+  },
+  "include": ["src", "config", "content", "vite.config.ts"]
+}

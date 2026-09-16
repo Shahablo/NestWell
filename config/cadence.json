@@ -1,0 +1,21 @@
+{
+  "version": "0.1.0",
+  "points": [
+    { "key": "day03", "day": 3, "template_key": "day03" },
+    { "key": "day07", "day": 7, "template_key": "day07" },
+    { "key": "day14", "day": 14, "template_key": "day14" },
+    { "key": "day21", "day": 21, "template_key": "day21" },
+    { "key": "week06", "day": 42, "template_key": "week06" },
+    { "key": "week09", "day": 63, "template_key": "week09" },
+    { "key": "week12", "day": 84, "template_key": "week12" }
+  ],
+  "response_window_hours": 48,
+  "reminder_offset_hours": 24,
+  "send_hour_local": 10,
+  "unreached_after_consecutive_unopened": 2,
+  "initial_contact_target_day": 21,
+  "weekly_burden_cap_items": 12,
+  "max_items_per_checkin": 5,
+  "loss_not_for_now_contact_days": 7,
+  "placeholder": true
+}
