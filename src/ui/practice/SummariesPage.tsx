@@ -52,7 +52,7 @@ export function SummariesPage() {
                   <tr key={sm.id}>
                     <td>{patientName(state, state.episodes[sm.episode_id]?.patient_id)}<div className="muted small"><code>{sm.id}</code></div></td>
                     <td>{sm.period.replace(/_/g, ' ')}</td>
-                    <td><Chip variant={sm.state === 'draft' ? 'warning' : sm.state === 'reviewed' ? 'accent' : 'neutral'}>{sm.state}</Chip>{sm.ai_draft && <div><Chip variant="ai">{aiLabel}</Chip></div>}</td>
+                    <td><Chip variant={sm.state === 'draft' ? 'warning' : sm.state === 'reviewed' ? 'accent' : 'neutral'}>{sm.state}</Chip>{sm.ai_draft && <div><Chip variant="ai">{sm.state !== 'draft' && sm.reviewer_id ? 'AI draft, reviewed' : aiLabel}</Chip></div>}</td>
                     <td style={{ whiteSpace: 'nowrap' }}>{fmt(sm.created_at)}</td>
                     <td>{sm.reviewer_id ? <><StaffName id={sm.reviewer_id} />{sm.reviewed_at ? <div className="muted small">{fmt(sm.reviewed_at)}</div> : null}</> : <span className="muted">not yet reviewed</span>}</td>
                     <td>{sm.withheld_notices.length}</td>
