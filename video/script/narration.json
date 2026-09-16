@@ -1,0 +1,187 @@
+{
+  "voice": "af_heart",
+  "speed": 0.88,
+  "sentence_gap": 0.55,
+  "scenes": [
+    {
+      "id": "open",
+      "title": "NestWell",
+      "min_seconds": 7,
+      "lead_in": 2.0,
+      "tail": 0.7,
+      "sentences": [
+        "Welcome to NestWell.",
+        "Gentle support for new mothers, and their practices."
+      ],
+      "caption": null,
+      "visual": "No app capture. On the ground color #FBF9F4 the Nest mark draws in: the three arcs one after another, then the egg settles inside. The NestWell wordmark fades up beneath it during the first sentence. A soft ground line appears under the mark during the second sentence. Slow 2-3 % scale drift, nothing else moving."
+    },
+    {
+      "id": "weeks",
+      "title": "The twelve weeks after birth",
+      "min_seconds": 10.2,
+      "lead_in": 0.8,
+      "tail": 0.8,
+      "sentences": [
+        "For a new mother, the twelve weeks after birth are full.",
+        "Feeding, healing, and very little sleep.",
+        "Follow-up care can quietly slip."
+      ],
+      "caption": null,
+      "visual": "No app capture. A rounded mother figure at home holding a small bundle (a closed-eye curve at most, no other face). During the first sentence a gentle band draws left to right across the middle-lower area with JetBrains Mono tick labels: birth, day 3, day 7, day 14, day 21, week 6, week 9, week 12. During the third sentence the later ticks (week 6 onward) soften and fade a little, suggesting care that slips. Keep the labels above the bottom 140 px."
+    },
+    {
+      "id": "promise",
+      "title": "The aim",
+      "min_seconds": 8.3,
+      "lead_in": 0.8,
+      "tail": 0.9,
+      "sentences": [
+        "NestWell has one aim.",
+        "Help her complete the next step in her care.",
+        "And let her practice confirm it happened."
+      ],
+      "caption": null,
+      "visual": "No app capture. A simple phone on the left and a clinic building on the right, joined by a soft dotted spruce line that travels from phone to clinic during the first sentence. The aim then types in above them in Bricolage Grotesque, one line per spoken sentence so the viewer reads what they hear: line 1 'Help her complete the next step in her care.' types during the second sentence; line 2 'Let her practice confirm it happened.' types during the third sentence. A small dawn check glows at the clinic end on the word 'happened'. Do not use the word 'promise' on screen. Good poster candidate."
+    },
+    {
+      "id": "demo",
+      "title": "A working demonstration",
+      "min_seconds": 6.5,
+      "lead_in": 0.8,
+      "tail": 0.9,
+      "sentences": [
+        "What you’ll see is a working demonstration, with made-up patients."
+      ],
+      "caption": null,
+      "visual": "No app screen yet. Empty phone and laptop frames ease into place side by side; a small pill label settles over them in JetBrains Mono: 'working demonstration · made-up patients'. The label must be fully readable while the sentence is spoken."
+    },
+    {
+      "id": "home",
+      "title": "Her phone",
+      "min_seconds": 9.5,
+      "lead_in": 0.8,
+      "tail": 0.8,
+      "sentences": [
+        "On every screen, “I need help now” is one tap away.",
+        "She also sees who to contact at her practice, and when."
+      ],
+      "caption": null,
+      "visual": "Phone frame with assets/app/phone-home.png. During the first sentence a soft dawn highlight ring fades in around the 'I need help now' button, then fades out. During the second sentence a soft spruce ring fades in around the contact card, including its hours. The demo contact card reads 'Care coordinator (NOT YET ASSIGNED)'; do not overlay or invent a person's name. Gentle 2 % drift toward each highlighted element; no fast zooms."
+    },
+    {
+      "id": "checkin",
+      "title": "Short check-ins",
+      "min_seconds": 13.5,
+      "lead_in": 0.7,
+      "tail": 0.8,
+      "sentences": [
+        "At set points, she answers a few short questions.",
+        "She can skip a question, or leave the whole check-in for later.",
+        "She sees no streaks, badges, or scores.",
+        "Her answers are simply saved."
+      ],
+      "caption": null,
+      "visual": "Phone frame, cross-fading through four captures, one per sentence: phone-checkin-intro.png (sentence 1); phone-checkin-question.png (sentence 2, soft spruce ring on the 'Skip' control, then on 'Not now', which puts off the whole check-in); phone-checkin-answer.png (sentence 3, held still with no ripple or highlight, so the line about no streaks, badges or scores sits on a calm screen); at the start of sentence 4 a small soft tap ripple on the selected calm option, then cross-fade to phone-checkin-saved.png with a soft glow on 'Your answers are saved'. Do not add any badge, streak, progress or score graphic."
+    },
+    {
+      "id": "help",
+      "title": "When something is urgent",
+      "min_seconds": 10.5,
+      "lead_in": 0.7,
+      "tail": 0.8,
+      "sentences": [
+        "If something feels urgent, she sees clear emergency steps, and can call from the screen.",
+        "In a real practice, clinicians approve that wording, and it stays the same every time."
+      ],
+      "caption": null,
+      "visual": "Phone frame with assets/app/phone-help.png. During the first sentence, hold the instruction still so it reads calmly; in the second half of that sentence the call (tel) links (911, 988, the hotline) pulse softly with a dawn glow, one after another. Second sentence: hold still, with at most a very soft spruce glow around the instruction text. No sirens, red flashes or alarm imagery. Do not add any 'written by clinicians' or 'clinically approved' label: the demo wording is not yet clinically signed."
+    },
+    {
+      "id": "mood",
+      "title": "Mood questions, her choice",
+      "min_seconds": 11,
+      "lead_in": 0.7,
+      "tail": 0.8,
+      "sentences": [
+        "Mood questions are optional, and not a diagnosis.",
+        "She decides who sees her answers, and can change that any time.",
+        "One safety question is the exception, and she is told up front."
+      ],
+      "caption": null,
+      "visual": "Phone frame with assets/app/phone-epds.png during the first sentence. Cross-fade to assets/app/phone-preferences.png at the second sentence, with a soft spruce ring around the 'Who sees my mood answers' card; in the second half of that sentence the ring eases from the current choice to another choice, as if she is picking a different one. Third sentence: if the framing screen's locked line ('If you answer yes to the question about harming yourself, your care team will be told even if you chose nobody yet') is visible in phone-epds.png, cross-fade back to it with a soft spruce ring on that line; otherwise hold the preferences screen still. Do not show or suggest any score. (Finishing edit: the third sentence now cross-fades to assets/app/phone-epds-notice.png, the same screen scrolled so the 'One answer is always shared' notice is fully visible, with a soft ring on it.)"
+    },
+    {
+      "id": "queue",
+      "title": "The practice side",
+      "min_seconds": 12,
+      "lead_in": 0.9,
+      "tail": 0.8,
+      "sentences": [
+        "On the practice side, each request goes to a set role, with a clock.",
+        "If no one picks it up in time, it escalates.",
+        "And her phone tells her to call, not to wait."
+      ],
+      "caption": null,
+      "visual": "Laptop frame with assets/app/desk-queues-urgent.png (coverage banner visible; it shows nobody on duty). Sentence 1: a small role chip (the role as the app shows it, such as 'Coordinator', never a made-up person's name) and a small clock (hand turning slowly) animate in beside the top item. Sentence 2: cross-fade to assets/app/desk-queues-unowned.png, soft spruce highlight on the item row with its UNOWNED label, and on the coverage banner. Sentence 3: cross-fade to the phone frame with assets/app/phone-nobody-reached.png, soft dawn ring around the 'not been able to reach a nurse yet' item and its call link. The chip must never show a name next to an UNOWNED row."
+    },
+    {
+      "id": "followthrough",
+      "title": "Follow-through",
+      "min_seconds": 12,
+      "lead_in": 0.8,
+      "tail": 0.8,
+      "sentences": [
+        "When her clinician makes a referral, the practice tracks each step.",
+        "Sent, then scheduled, then kept.",
+        "A referral counts when the appointment is kept, not when it is sent."
+      ],
+      "caption": null,
+      "visual": "Laptop frame with assets/app/desk-referral.png, banner hidden. First sentence: soft highlight on the referral row. Second sentence: three JetBrains Mono chips light up in turn, timed to the three words: 'sent', 'scheduled', 'kept' ('kept' in spruce with a small check). Third sentence: 'kept' keeps a gentle glow while 'sent' dims slightly."
+    },
+    {
+      "id": "loss",
+      "title": "After a loss",
+      "min_seconds": 11,
+      "lead_in": 1.6,
+      "tail": 1.0,
+      "sentences": [
+        "After a pregnancy or baby loss, baby content stops at once.",
+        "She chooses how she is addressed, and how often to be contacted.",
+        "And nothing starts again on its own."
+      ],
+      "caption": null,
+      "visual": "Quieter and slower than other scenes. Phone frame with assets/app/phone-elena-home.png. Beside it a small card labelled 'baby content' fades softly away during the first sentence; no dramatic motion. Second sentence: soft spruce ring on the contact or preferences area of her home screen (the dialog itself covers how she is addressed, whether the baby's name is used, and contact frequency). Third sentence: hold still (optionally cross-fade to phone-elena-careplan.png). Muted palette, no dawn accent, no baby imagery."
+    },
+    {
+      "id": "summary",
+      "title": "A summary for her clinician",
+      "min_seconds": 10,
+      "lead_in": 0.7,
+      "tail": 0.8,
+      "sentences": [
+        "AI explains clinician-approved material and drafts summaries for her clinician to review.",
+        "It never triages, diagnoses, or reassures, and never takes a person’s place.",
+        "The practice can also see where follow-up stalls."
+      ],
+      "caption": null,
+      "visual": "Laptop frame with assets/app/desk-summaries.png during the first two sentences; a small JetBrains Mono chip 'AI draft (example text in this demo) · clinician reviews' settles near the summary row labelled as reviewed. Hold calmly through the second sentence; no extra text or icons for it. Cross-fade to assets/app/desk-metrics.png at the third sentence with a gentle drift; do not zoom into or call out any specific number (the demo data is made up)."
+    },
+    {
+      "id": "close",
+      "title": "In development",
+      "min_seconds": 9,
+      "lead_in": 0.8,
+      "tail": 3.0,
+      "sentences": [
+        "NestWell is in development, and looking for pilot practices in Ohio.",
+        "To learn more, visit hello NestWell dot com."
+      ],
+      "caption": [
+        "NestWell is in development, and looking for pilot practices in Ohio.",
+        "To learn more, visit hellonestwell.com."
+      ],
+      "visual": "No app capture. The Nest mark returns on the ground color, drawing in as in the open scene. During the first sentence the line 'In development · looking for pilot practices in Ohio' fades up. During the second sentence 'hellonestwell.com' fades up below it in spruce. Hold to the end for the music fade."
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NestWell art gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; background: #FBF9F4; color: #16221F; }
+  body { width: 1920px; height: 1080px; overflow: hidden; position: relative; font-family: 'Source Sans 3', sans-serif; }
+  h1 { position: absolute; left: 80px; top: 36px; margin: 0; font: 700 34px 'Bricolage Grotesque', sans-serif; letter-spacing: -0.01em; }
+  .cap { font: 400 15px 'JetBrains Mono', monospace; color: #5A6763; margin-top: 6px; text-align: center; }
+  .item { position: absolute; display: flex; flex-direction: column; align-items: center; }
+  .row { display: flex; gap: 14px; align-items: flex-end; }
+</style>
+</head>
+<body>
+<h1>NestWell art library</h1>
+<div id="stage"></div>
+<script src="art.js"></script>
+<script>
+(async function () {
+  var A = window.ART;
+  var stage = document.getElementById('stage');
+  function place(x, y, html, cap, w) {
+    var d = document.createElement('div');
+    d.className = 'item';
+    d.style.left = x + 'px'; d.style.top = y + 'px';
+    if (w) d.style.width = w + 'px';
+    d.innerHTML = html + (cap ? '<div class="cap">' + cap + '</div>' : '');
+    stage.appendChild(d);
+    return d;
+  }
+  async function exists(u) { try { var r = await fetch(u, { method: 'HEAD' }); return r.ok; } catch (e) { return false; } }
+  var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844"><rect width="390" height="844" fill="#E1EEEB"/><rect x="24" y="40" width="200" height="22" rx="11" fill="#1F5F5B" opacity="0.5"/><rect x="24" y="90" width="342" height="120" rx="16" fill="#FFFFFF"/><rect x="24" y="230" width="342" height="64" rx="32" fill="#1F5F5B"/></svg>');
+  var dph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900"><rect width="1440" height="900" fill="#E1EEEB"/><rect width="260" height="900" fill="#FFFFFF"/><rect x="300" y="40" width="500" height="36" rx="10" fill="#1F5F5B" opacity="0.5"/><rect x="300" y="110" width="1100" height="120" rx="16" fill="#FFFFFF"/><rect x="300" y="250" width="1100" height="120" rx="16" fill="#FFFFFF"/></svg>');
+  var phoneImg = (await exists('../assets/app/phone-home.png')) ? '../assets/app/phone-home.png' : ph;
+  var deskImg = (await exists('../assets/app/desk-queues-urgent.png')) ? '../assets/app/desk-queues-urgent.png' : dph;
+
+  // nest mark progress strip
+  var marks = [0.15, 0.35, 0.55, 0.75, 1].map(function (p) {
+    return '<div style="display:flex;flex-direction:column;align-items:center">' + A.nestMark({ size: 96, progress: p }) + '<div class="cap">' + p + '</div></div>';
+  }).join('');
+  place(80, 110, '<div class="row">' + marks + '</div>', 'nestMark({ size, progress })');
+  place(700, 110, '<div style="display:flex;align-items:center;gap:18px">' + A.nestMark({ size: 84 }) +
+    '<span style="font:700 56px \'Bricolage Grotesque\',sans-serif;letter-spacing:-0.02em;color:#16221F">NestWell</span></div>', 'nestMark + wordmark (scene use)');
+
+  // figures
+  place(80, 300, '<div class="row">' + A.mother({ size: 210, sway: -1 }) + A.mother({ size: 210, sway: 0 }) + A.mother({ size: 210, sway: 1 }) + '</div>', 'mother({ size, sway: -1 / 0 / 1 })');
+  place(80, 700, '<div class="row">' + A.coordinator({ size: 210 }) + A.clinician({ size: 210 }) + '</div>', 'coordinator({ size })  ·  clinician({ size })');
+  place(540, 780, '<div class="row">' + A.home({ size: 190 }) + A.clinic({ size: 230 }) + '</div>', 'home({ size })  ·  clinic({ size })');
+
+  // devices
+  place(1060, 110, A.phoneFrame({ width: 250, imageHref: phoneImg }), 'phoneFrame({ width, imageHref })');
+  place(1370, 350, A.laptopFrame({ width: 440, imageHref: deskImg }), 'laptopFrame({ width, imageHref })');
+
+  // chips
+  place(1400, 100, '<div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start">' +
+    A.chip({ text: 'day 21', tone: 'spruce' }) +
+    A.chip({ text: 'AI draft · clinician reviews', tone: 'dawn' }) +
+    A.chip({ text: 'acknowledged 14 min', tone: 'soft' }) +
+    A.chip({ text: 'working demonstration · made-up patients', tone: 'night', fontSize: 16 }) +
+    '</div>', 'chip({ text, tone })');
+
+  var links = [0.3, 0.7, 1].map(function (p) {
+    return '<div style="display:flex;flex-direction:column;align-items:center">' + A.dottedLink({ x1: 0, y1: 60, x2: 300, y2: 60, progress: p, width: 210 }) + '<div class="cap">' + p + '</div></div>';
+  }).join('');
+  place(1000, 780, '<div class="row" style="gap:30px">' + links + '</div>', 'dottedLink({ x1, y1, x2, y2, progress })');
+  var clocks = [0, 0.3, 0.65, 1].map(function (p) { return A.clock({ size: 76, progress: p }); }).join('');
+  place(1020, 950, '<div class="row">' + clocks + '</div>', 'clock({ size, progress })');
+  place(1560, 900, '<div class="row">' + A.ring({ r: 40, opacity: 1 }) + A.ring({ r: 40, opacity: 0.6, tone: 'dawn' }) + '</div>', 'ring({ r, opacity, tone })');
+
+  await document.fonts.ready;
+  await Promise.all(Array.prototype.map.call(document.images, function (i) { return i.complete ? 1 : new Promise(function (r) { i.onload = i.onerror = r; }); }));
+  window.galleryReady = true;
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+.models/
+.venv/
+build/
+frames/
+*.wav
+!music/*.wav
