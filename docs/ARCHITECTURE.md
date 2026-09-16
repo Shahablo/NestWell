@@ -91,9 +91,13 @@ Emit `reminder_sent` or `notification_suppressed` (with reason) as derived event
 
 **Queue item timers (FR-25).** For each queue item with a `queue_def`: `ack_target_at =
 created_at + ack_target_minutes` (or `open_clinical_ack_target_minutes` when flagged) and
-`backup_target_at = created_at + backup_ack_target_minutes`, computed on the queue's `timer_basis`
-(`wall`: plain minutes; `coverage_hours`: only minutes inside coverage windows count — implement
-a helper that walks the coverage schedule). State: `resolved` if resolved; `acknowledged` if
+`backup_target_at = ack_target_at + (backup_ack_target_minutes − ack_target_minutes)`, computed on
+the queue's `timer_basis` (`wall`: plain minutes; `coverage_hours`: wall minutes, and a target that
+falls outside a coverage window is deferred to the next coverage start — `coverageDeadline` in
+`derive.ts`). The FR-25 acceptance criterion fixes this semantics: an item at 7 p.m. with 30/30
+targets is UNOWNED at the next coverage start, not thirty minutes into it. Chaining the backup
+target from the acknowledgment target keeps "escalated" and "UNOWNED" distinct instants on the
+coverage-hours basis. State: `resolved` if resolved; `acknowledged` if
 acknowledged; else `unowned` if `T >= backup_target_at`; `escalated` if `T >= ack_target_at`;
 else `open`. Emit derived `escalation_escalated` / `escalation_unacknowledged_timeout`
 (with `patient_notified: true`) at those instants. `minutes_to_ack` in demo-clock minutes.

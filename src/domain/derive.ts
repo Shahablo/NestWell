@@ -4,13 +4,18 @@
  */
 import { addDays, addHours, addMinutes, atLocalHour, localHHMM, minutesBetween, toMs, weekdayInZone, DAY } from './clock';
 import type { CoverageEntry, QueueDef } from './config.schema';
-import type { CheckinSet, CheckinState, ContentTag, ISO, Id, QueueItemState, QueueKey, ReferralState, SensitiveStatus, SensitiveSubtype } from './types';
+import type { CheckinSet, CheckinState, ContentTag, DeliveryOutcome, ISO, Id, QueueItemState, QueueKey, ReferralState, SensitiveStatus, SensitiveSubtype } from './types';
 
 // ---------------------------------------------------------------------------
 // FR-55 suppression matrix and check-in sets
 // ---------------------------------------------------------------------------
 
-const LOSS_TAGS: readonly ContentTag[] = ['infant', 'feeding', 'milestone', 'celebration', 'newborn_visit', 'birth_story'];
+export const LOSS_TAGS: readonly ContentTag[] = ['infant', 'feeding', 'milestone', 'celebration', 'newborn_visit', 'birth_story'];
+
+const LOSS_OUTCOMES: readonly DeliveryOutcome[] = ['stillbirth', 'pregnancy_loss', 'neonatal_loss'];
+
+/** A recorded delivery outcome that is itself a loss (FR-54): the loss suppression applies from the moment it is recorded. */
+export const isLossOutcome = (o: DeliveryOutcome | null | undefined): boolean => o !== null && o !== undefined && LOSS_OUTCOMES.includes(o);
 
 /** FR-55: tags suppressed per active subtype. Suppression is the union over active subtypes (FR-54). */
 export const SUPPRESSION_MATRIX: Readonly<Record<SensitiveSubtype, readonly ContentTag[]>> = {
@@ -39,10 +44,15 @@ export function activeStatusesAt(statuses: readonly SensitiveStatus[], at: ISO):
   return statuses.filter((s) => toMs(s.set_at) <= t && (s.lifted_at === null || t < toMs(s.lifted_at)));
 }
 
-/** Union of suppressed tags over the active statuses given. */
-export function suppressionFor(statuses: readonly SensitiveStatus[]): Set<ContentTag> {
+/**
+ * Union of suppressed tags over the active statuses given, plus the loss set when the episode's
+ * recorded delivery outcome is a loss (FR-54: a recorded stillbirth suppresses infant content at
+ * once, whether or not the woman has tapped a control herself).
+ */
+export function suppressionFor(statuses: readonly SensitiveStatus[], delivery_outcome: DeliveryOutcome | null = null): Set<ContentTag> {
   const tags = new Set<ContentTag>();
   for (const s of statuses) if (s.active) for (const t of SUPPRESSION_MATRIX[s.subtype]) tags.add(t);
+  if (isLossOutcome(delivery_outcome)) for (const t of LOSS_TAGS) tags.add(t);
   return tags;
 }
 
@@ -212,14 +222,35 @@ export function nextCoverageStart(at: ISO, entries: readonly CoverageEntry[], tz
 
 /**
  * A target on the `coverage_hours` basis: the wall target, deferred to the next coverage
- * start when it falls outside coverage (FR-25 AC: an item at 7 p.m. with 30/30 targets and
- * 9–17 weekday coverage becomes UNOWNED at 9:00 on the next business day). With no coverage
- * entries for the queue the wall target is used, so an item can never sit open forever.
+ * start when it falls outside coverage. This is the semantics the FR-25 acceptance criterion
+ * fixes ("Marisol at 7 p.m. ... coverage_hours basis: UNOWNED at 9:00 a.m. next day"): an item
+ * at 7 p.m. with 30/30 targets and 9–17 weekday coverage becomes UNOWNED at 9:00, not 9:30.
+ * With no coverage entries for the queue the wall target is used, so an item can never sit
+ * open forever.
  */
 export function coverageDeadline(start: ISO, minutes: number, entries: readonly CoverageEntry[], tz: string): ISO {
   const wall = addMinutes(start, minutes);
   if (entries.length === 0) return wall;
   return nextCoverageStart(wall, entries, tz) ?? wall;
+}
+
+/**
+ * FR-25: the one computed "a call is expected by" instant for a queue item, the same on every
+ * surface (queue row, patient closing statement, coverage notice). Before acknowledgment it is the
+ * acknowledgment target; after acknowledgment it is the resolution target when the queue has one,
+ * otherwise the queue's acknowledgment minutes counted from the acknowledgment on the queue's basis.
+ */
+export function callByFor(
+  item: { acknowledged_at: ISO | null; ack_target_at: ISO; resolution_target_at: ISO | null },
+  def: QueueDef | undefined,
+  coverage: readonly CoverageEntry[],
+  tz: string,
+): ISO {
+  if (item.resolution_target_at) return item.resolution_target_at;
+  if (item.acknowledged_at === null) return item.ack_target_at;
+  const minutes = def?.ack_target_minutes ?? 60;
+  const entries = def ? coverage.filter((e) => e.queue_key === def.key) : [];
+  return def?.timer_basis === 'coverage_hours' ? coverageDeadline(item.acknowledged_at, minutes, entries, tz) : addMinutes(item.acknowledged_at, minutes);
 }
 
 export interface TimerInput {
@@ -261,7 +292,11 @@ export function queueTimersFor(item: TimerInput, def: QueueDef | undefined, cove
   const deadline = (m: number): ISO => deadlineFrom(item.created_at, m);
   const explicit = item.ack_deadline_at ?? null;
   const ack_target_at = explicit ?? deadline(ackMinutes);
-  const backup_target_at = explicit !== null ? deadlineFrom(explicit, Math.max(0, backupMinutes - ackMinutes)) : deadline(backupMinutes);
+  // The backup target follows the acknowledgment target by the queue's backup delta, on the same basis. On the
+  // coverage-hours basis this keeps "escalated" and "UNOWNED" distinct instants when both wall targets would
+  // otherwise defer to the same coverage start (a 480/960 item created at 10:35 escalates at 8:00 the next
+  // business day and becomes UNOWNED at 16:00, not 8:00). With equal targets (30/30) both stay at the coverage start.
+  const backup_target_at = deadlineFrom(ack_target_at, Math.max(0, backupMinutes - ackMinutes));
   const resolution_target_at = def?.resolution_target_minutes != null ? deadline(def.resolution_target_minutes) : null;
 
   const handled = [item.acknowledged_at, item.resolved_at].filter((x): x is ISO => x !== null).map(toMs);

@@ -46,6 +46,22 @@ export const REFERRAL_STATES: ReferralState[] = [
 ];
 
 /** Writes the referral partner view may make (4.2): booking, kept, not kept, capacity and coverage. */
+/**
+ * FR-33: the states a referral may move to from its current state. Forward only: a scheduled referral is never
+ * moved back to "sent" (which would re-record consent); a missed appointment may be scheduled again.
+ */
+export const REFERRAL_NEXT_STATES: Record<ReferralState, ReferralState[]> = {
+  created: ['sent_to_partner', 'declined_by_patient', 'closed'],
+  sent_to_partner: ['appointment_scheduled', 'no_capacity', 'not_covered', 'declined_by_patient', 'closed'],
+  appointment_scheduled: ['appointment_completed', 'appointment_missed', 'no_capacity', 'not_covered', 'declined_by_patient', 'closed'],
+  appointment_missed: ['appointment_scheduled', 'no_capacity', 'not_covered', 'declined_by_patient', 'closed'],
+  no_capacity: ['appointment_scheduled', 'closed'],
+  not_covered: ['appointment_scheduled', 'closed'],
+  declined_by_patient: ['closed'],
+  appointment_completed: ['closed'],
+  closed: [],
+};
+
 export const PARTNER_REFERRAL_STATES: ReferralState[] = ['appointment_scheduled', 'appointment_completed', 'appointment_missed', 'no_capacity', 'not_covered'];
 
 export const SUBTYPE_LABELS: Record<SensitiveSubtype, string> = {

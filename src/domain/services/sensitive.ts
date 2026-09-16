@@ -5,6 +5,7 @@
  */
 import { addDays } from '../clock';
 import { activeStatusesAt } from '../derive';
+import { roleOfActor } from '../projection';
 import type { AnyEvent, Command, Episode, Id, SensitiveSubtype } from '../types';
 import { DomainError } from './errors';
 import { routeFreeTextEvents } from './freetext';
@@ -80,9 +81,12 @@ export function liftSensitiveStatus(input: { patient_id: Id; subtype: SensitiveS
   return (ctx) => {
     const st = ctx.state.sensitiveStatuses.find((s) => s.patient_id === input.patient_id && s.subtype === input.subtype && s.active);
     if (!st) throw new DomainError('no_active_status', `No active ${input.subtype} status for ${input.patient_id}`);
-    if (ctx.actor.type === 'patient' && input.subtype !== 'trauma') throw new DomainError('not_permitted', 'Only a coordinator lifts a loss or NICU status (NFR-07)');
+    const role = roleOfActor(ctx.actor);
+    // NFR-07 table: loss and NICU are lifted by a coordinator (the admin running the demo may too); trauma also by the patient.
+    const allowed: readonly string[] = input.subtype === 'trauma' ? ['patient', 'coordinator', 'admin'] : ['coordinator', 'admin'];
+    if (!allowed.includes(role)) throw new DomainError('not_permitted', `Only a coordinator lifts a ${input.subtype === 'trauma' ? 'trauma status (or the patient herself)' : 'loss or NICU status'} (NFR-07)`);
     if (!input.reason || input.reason.trim() === '') throw new DomainError('reason_required', 'A lift needs a reason (FR-55)');
-    const lifted_by = ctx.actor.type === 'patient' ? 'patient' : ctx.actor.id ?? ctx.actor.role ?? ctx.actor.type;
+    const lifted_by = role === 'patient' ? 'patient' : ctx.actor.id ?? ctx.actor.role ?? ctx.actor.type;
     return [ctx.makeEvent('sensitive_status_lifted', { patient_id: input.patient_id, subtype: input.subtype, lifted_by, reason: input.reason }, { patient_id: input.patient_id, episode_id: st.episode_id })];
   };
 }

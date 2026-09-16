@@ -20,7 +20,7 @@
   {
     "key": "needs_review",
     "label": "Needs review",
-    "description": "Positive screen, coping-difficulty answer, any free text, therapy-intent block, or referral dead end. Same business day (placeholder), counted on coverage hours.",
+    "description": "Positive screen, coping-difficulty answer, any free text, therapy-intent block, or referral dead end. Eight hours (placeholder); a target that falls outside coverage hours moves to the next coverage start, and the backup target follows the acknowledgment target by the same delta.",
     "owner_role": "clinician",
     "owner_permission": null,
     "owner_user_id": null,

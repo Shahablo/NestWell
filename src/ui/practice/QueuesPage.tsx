@@ -12,13 +12,17 @@ import { StaffName } from './StaffName';
 type Show = 'open' | 'resolved' | 'all';
 
 export function QueuesPage() {
-  const { state, config, clock } = useApp();
+  const { state, config, clock, role } = useApp();
   const { onDuty, coverageLabel } = usePractice();
   const [params, setParams] = useSearchParams();
   const [show, setShow] = useState<Show>('open');
   const keys = config.queues.map((q) => q.key);
   const requested = params.get('queue') as QueueKey | null;
-  const tab: QueueKey = requested && keys.includes(requested) ? requested : keys[0];
+  // FR-43: each view opens on the first queue its role owns (the clinician on Needs review), or on an owned queue with open items.
+  const owned = config.queues.filter((q) => q.owner_role === role).map((q) => q.key);
+  const ownedWithOpen = owned.find((k) => Object.values(state.queueItems).some((q) => q.queue_key === k && q.state !== 'resolved'));
+  const fallback: QueueKey = (role === 'coordinator' ? keys[0] : ownedWithOpen ?? owned[0]) ?? keys[0];
+  const tab: QueueKey = requested && keys.includes(requested) ? requested : fallback;
   const def = config.queues.find((q) => q.key === tab);
 
   const byQueue = useMemo(() => {

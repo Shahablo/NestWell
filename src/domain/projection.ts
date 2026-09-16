@@ -10,7 +10,7 @@ import { addDays, toMs } from './clock';
 import type { AppConfig, QueueDef } from './config.schema';
 import type { ContentIndex } from './content';
 import {
-  activePauseAt, activeStatusesAt, checkinSetFor, checkinStateAt, day21SweepFor, initialContactFor, isIndicated, isPausedAt,
+  activePauseAt, activeStatusesAt, checkinSetFor, checkinStateAt, day21SweepFor, initialContactFor, isIndicated, isLossOutcome, isLossSubtype, isPausedAt,
   openClinicalFlagAt, queueTimersFor, reminderFor, suppressionFor, unreachedItemsFor,
   type CheckinFacts, type DerivedUnreached, type EpisodeFacts, type PauseInterval, type ReminderResult,
 } from './derive';
@@ -21,7 +21,7 @@ import type {
 } from './types';
 
 interface CheckinExtra { complete: boolean; skipped_at: ISO | null; not_applicable: boolean }
-interface EpisodeExtra { pauses: PauseInterval[]; closed_at: ISO | null }
+interface EpisodeExtra { pauses: PauseInterval[]; closed_at: ISO | null; delivery_recorded_at: ISO | null }
 interface QueueAction {
   acknowledged_at: ISO | null; acknowledged_by: Id | null; resolved_at: ISO | null; resolved_by: Id | null;
   outcome: string | null; contact_id: Id | null; rating: QueueItem['rating']; reopened_at: ISO | null;
@@ -98,12 +98,14 @@ function apply(d: Draft, e: AnyEvent, config: AppConfig, content: ContentIndex):
         status: 'active', paused_until: null, paused: false, close_reason: null, closed_at: null, transition: null,
         initial_contact_day: null, initial_contact_met_target: null, indicated: false,
       };
-      d.episodeExtra.set(p.episode_id, { pauses: [], closed_at: null });
+      d.episodeExtra.set(p.episode_id, { pauses: [], closed_at: null, delivery_recorded_at: isLossOutcome(p.delivery_outcome) ? at : null });
       return;
     }
     case 'delivery_recorded': {
       const ep = s.episodes[e.payload.episode_id];
       if (ep) { ep.delivery_date = e.payload.delivery_date; ep.delivery_outcome = e.payload.outcome; }
+      const x = d.episodeExtra.get(e.payload.episode_id);
+      if (x) x.delivery_recorded_at = isLossOutcome(e.payload.outcome) ? at : null;
       return;
     }
     case 'acknowledged': {
@@ -356,7 +358,9 @@ function apply(d: Draft, e: AnyEvent, config: AppConfig, content: ContentIndex):
     }
     case 'ai_call': {
       const p = e.payload;
-      s.aiInteractions[p.ai_interaction_id] = { id: p.ai_interaction_id, feature: p.feature, episode_id: p.episode_id, content_ids: [...p.content_ids], prompt_hash: p.prompt_hash, content_manifest_hash: content.manifestHash, model_id: null, prefilter_result: 'not_run', postfilter_result: 'not_run', fallback_used: false, blocked_reason: null, occurred_at: at };
+      // AI-16: a stored summary_narrative call passed the deny-list postfilter (draftSummary refuses the whole command
+      // otherwise, so no ai_call is written for a blocked narrative); the other features run no postfilter in fallback mode.
+      s.aiInteractions[p.ai_interaction_id] = { id: p.ai_interaction_id, feature: p.feature, episode_id: p.episode_id, content_ids: [...p.content_ids], prompt_hash: p.prompt_hash, content_manifest_hash: content.manifestHash, model_id: null, prefilter_result: 'not_run', postfilter_result: p.feature === 'summary_narrative' ? 'pass' : 'not_run', fallback_used: false, blocked_reason: null, occurred_at: at };
       d.lastAi.set(`${p.feature}:${p.episode_id ?? ''}`, p.ai_interaction_id);
       return;
     }
@@ -465,11 +469,11 @@ export function project(events: readonly AnyEvent[], clock: ISO, config: AppConf
   for (const ep of Object.values(s.episodes)) {
     const patient = s.patients[ep.patient_id];
     const prefs = patient?.preferences ?? EMPTY_PREFS;
-    const extra = d.episodeExtra.get(ep.id) ?? { pauses: [], closed_at: ep.closed_at };
+    const extra = d.episodeExtra.get(ep.id) ?? { pauses: [], closed_at: ep.closed_at, delivery_recorded_at: null };
     const epFacts: EpisodeFacts = { pauses: extra.pauses, closed_at: extra.closed_at };
     const statuses = statusesByEp.get(ep.id) ?? [];
     const activeNow = statuses.filter((st) => st.active);
-    const suppressed = suppressionFor(activeNow);
+    const suppressed = suppressionFor(activeNow, ep.delivery_outcome);
     const setNow = checkinSetFor(activeNow);
     const contacts = contactsByEp.get(ep.id) ?? [];
     const screens = screensByEp.get(ep.id) ?? [];
@@ -489,7 +493,8 @@ export function project(events: readonly AnyEvent[], clock: ISO, config: AppConf
 
     // Check-ins: subtype set re-mapping (FR-55), then states (FR-08)
     const checkins = (checkinsByEp.get(ep.id) ?? []).sort((a, b) => toMs(a.scheduled_at) - toMs(b.scheduled_at) || a.id.localeCompare(b.id));
-    const statusFrom = activeNow.length ? Math.min(...activeNow.map((st) => toMs(st.set_at))) : null;
+    const suppressionStarts = [...activeNow.map((st) => toMs(st.set_at)), ...(extra.delivery_recorded_at ? [toMs(extra.delivery_recorded_at)] : [])];
+    const statusFrom = suppressionStarts.length ? Math.min(...suppressionStarts) : null;
     for (const c of checkins) {
       if (statusFrom !== null && setNow !== 'standard' && c.set !== setNow && c.submitted_at === null && toMs(c.scheduled_at) >= statusFrom) {
         const t = templatesBySet.get(setNow);
@@ -633,9 +638,14 @@ export function activeStatusesFor(state: State, episode_id: Id, at: ISO): Sensit
   return activeStatusesAt(state.sensitiveStatuses.filter((s) => s.episode_id === episode_id), at);
 }
 
-/** FR-54/FR-55: the content tags suppressed for an episode at an instant (union over the statuses in force). */
+/** FR-54/FR-55: the content tags suppressed for an episode at an instant (union over the statuses in force and a recorded loss outcome). */
 export function suppressedTagsFor(state: State, episode_id: Id, at: ISO = state.clock): Set<ContentTag> {
-  return suppressionFor(activeStatusesFor(state, episode_id, at));
+  return suppressionFor(activeStatusesFor(state, episode_id, at), state.episodes[episode_id]?.delivery_outcome ?? null);
+}
+
+/** The loss pathway is in force when a loss status is active or the recorded delivery outcome is a loss (FR-54, FR-57). */
+export function lossPathwayActive(state: State, episode_id: Id, at: ISO = state.clock): boolean {
+  return isLossOutcome(state.episodes[episode_id]?.delivery_outcome) || activeStatusesFor(state, episode_id, at).some((s) => isLossSubtype(s.subtype));
 }
 
 export function checkinsForEpisode(state: State, episode_id: Id): Checkin[] {

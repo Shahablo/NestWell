@@ -19,7 +19,7 @@ export function Choice<V extends string>({ options, value, onPick, multi = false
   return (
     <div className="option-list" role={multi ? 'group' : 'radiogroup'}>
       {options.map((o) => (
-        <button key={o.value} type="button" className="option-btn" role={multi ? 'checkbox' : 'radio'} aria-checked={selected(o.value)} onClick={() => onPick(o.value)}>
+        <button key={o.value} type="button" className="option-btn" role={multi ? 'checkbox' : 'radio'} aria-checked={selected(o.value)} aria-label={o.hint ? `${o.label}. ${o.hint}` : o.label} onClick={() => onPick(o.value)}>
           <span>
             {o.label}
             {o.hint && <span className="small muted" style={{ display: 'block', fontWeight: 400 }}>{o.hint}</span>}
@@ -157,7 +157,18 @@ export function PreferencesPage() {
           {prefs.contact_frequency === null ? (
             <Button block to="/p/sensitive-preferences">Choose how we stay in touch</Button>
           ) : (
-            <p className="small muted">This was set in the one-time dialog. To change it, call your named contact.</p>
+            <>
+              {/* FR-56: the dialog is asked once, but her choice stays editable here as the dialog promises. */}
+              <Choice
+                value={prefs.contact_frequency === 'not_for_now' ? null : prefs.contact_frequency}
+                options={[
+                  { value: 'continue', label: 'Continue as planned' },
+                  { value: 'reduced', label: 'Less often' },
+                ]}
+                onPick={(v) => set('contact_frequency', v)}
+              />
+              <p className="small muted">{prefs.contact_frequency === 'not_for_now' ? 'Check-ins are paused for now. Choosing an option above does not turn them back on; use "Turn check-ins back on" on your home screen for that.' : 'To pause everything for a while, use "Pause check-ins" on your home screen.'}</p>
+            </>
           )}
         </Card>
       )}

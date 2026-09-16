@@ -8,7 +8,7 @@ import { useCallback, useMemo, useSyncExternalStore } from 'react';
 import { addMinutes, dayNumber, toMs } from '../../domain/clock';
 import type { AppConfig } from '../../domain/config.schema';
 import { coverageDeadline, isInsideCoverage, isLossSubtype } from '../../domain/derive';
-import { activeEpisodeFor, activeStatusesFor, suppressedTagsFor } from '../../domain/projection';
+import { activeEpisodeFor, activeStatusesFor, lossPathwayActive, suppressedTagsFor } from '../../domain/projection';
 import { sharedWithFor } from '../../domain/services/screening';
 import type { AnyEvent, Command, ContentTag, Episode, ISO, Id, Patient, QueueKey, SensitiveStatus, SharingCategory, State } from '../../domain/types';
 import { useApp, type AppStore } from '../shell/useApp';
@@ -249,7 +249,8 @@ export function usePatient(): PatientApi {
 
   return {
     app, state, config, clock, events, patients, patient, episode, content, locale: content.locale, contactVars, day, statuses, suppressed,
-    lossActive: statuses.some((s) => isLossSubtype(s.subtype)),
+    // FR-54: a recorded loss outcome counts as well as her own control or a staff-set status.
+    lossActive: episode ? lossPathwayActive(state, episode.id, clock) : statuses.some((s) => isLossSubtype(s.subtype)),
     acknowledged: episode?.acknowledged_at !== null && episode?.acknowledged_at !== undefined,
     demoParticipantMode, run, fmt: app.fmt, fmtTime: app.fmtTime,
   };

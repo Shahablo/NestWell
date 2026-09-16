@@ -27,6 +27,32 @@ export interface FreeTextResult {
 
 const normalize = (s: string): string => s.toLowerCase().replace(/\s+/g, ' ').trim();
 
+/**
+ * FR-17 "never a dead end": a check-in note lives on the check-in response and a saved question on
+ * its own record, but the usefulness comment and the sensitive-preferences note have no record of
+ * their own, so their text is carried on the queue item that routes them (after this marker) and is
+ * revealed to the coordinator or clinician only through a recorded read (FR-03a). The marker keeps
+ * the item's summary line free of the text.
+ */
+export const ROUTED_TEXT_MARKER = '\n[text]\n';
+const FIELDS_CARRYING_TEXT: readonly FreeTextField[] = ['usefulness_comment', 'sensitive_preferences'];
+
+/** Splits a queue-item note into its summary line and the routed free text it carries (if any). */
+export function splitRoutedNote(note: string | null | undefined): { summary: string | null; text: string | null } {
+  if (!note) return { summary: null, text: null };
+  const i = note.indexOf(ROUTED_TEXT_MARKER);
+  if (i < 0) return { summary: note, text: null };
+  return { summary: note.slice(0, i), text: note.slice(i + ROUTED_TEXT_MARKER.length) };
+}
+
+const FIELD_LABELS: Record<FreeTextField, string> = {
+  checkin_free_text: 'check-in note', saved_question: 'saved question', usefulness_comment: 'usefulness comment', sensitive_preferences: 'note with her contact preferences',
+};
+
+function noteFor(summary: string, field: FreeTextField, text: string): string {
+  return FIELDS_CARRYING_TEXT.includes(field) ? `${summary}${ROUTED_TEXT_MARKER}${text}` : summary;
+}
+
 /** Case-insensitive whole-phrase containment. Returns only { version, term_class }, never the text. */
 export function matchLexicon(text: string, lexicon: Lexicon | undefined): LexiconMatch | null {
   if (!lexicon) return null;
@@ -60,7 +86,7 @@ export function routeFreeTextEvents(ctx: CommandContext, input: FreeTextInput): 
   if (match) {
     const q = newQueueItem(ctx, {
       queue_key: 'urgent', episode_id: ep.id, trigger_type: 'lexicon_match', trigger_ref: input.checkin_id ?? null,
-      note: `emergency lexicon match on ${input.field} (lexicon v${match.version}, class ${match.term_class}); text is read in the patient record`,
+      note: noteFor(`emergency lexicon match on the ${FIELD_LABELS[input.field]} (lexicon v${match.version}, class ${match.term_class}); the text is read in the patient record`, input.field, text),
     });
     events.push(q.event);
     events.push(ctx.makeEvent('emergency_instruction_shown', { episode_id: ep.id, layout: 'full_screen', trigger: 'lexicon_match' }, opts));
@@ -70,7 +96,7 @@ export function routeFreeTextEvents(ctx: CommandContext, input: FreeTextInput): 
   }
   const q = newQueueItem(ctx, {
     queue_key: 'needs_review', episode_id: ep.id, trigger_type: 'free_text', trigger_ref: input.checkin_id ?? null,
-    note: `free text entered (${input.field}); a clinician reads it by the same-business-day target`,
+    note: noteFor(`free text entered (${FIELD_LABELS[input.field]}); a clinician reads it by the same-business-day target`, input.field, text),
   });
   events.push(q.event);
   events.push(ctx.makeEvent('free_text_routed', { episode_id: ep.id, field: input.field, queue_key: 'needs_review', queue_item_id: q.id, lexicon_match: null }, opts));

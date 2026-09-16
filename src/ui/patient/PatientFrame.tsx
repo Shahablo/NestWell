@@ -2,8 +2,8 @@
  * The patient layout: content column, persona bar, and the persistent "I need help now" button
  * that opens FR-21 in one tap from every patient screen regardless of acknowledgment (FR-04).
  */
-import type { ReactNode } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, type ReactNode } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Banner, Button, Chip, Placeholder } from '../components';
 import { usePatient } from './usePatient';
 import type { ContentVars } from '../shell/useContent';
@@ -48,6 +48,11 @@ export function ErrorNotice({ error }: { error: string | null }) {
 
 export function PatientFrame({ title, children }: { title?: string; children: ReactNode }) {
   const { patient, demoParticipantMode } = usePatient();
+  const location = useLocation();
+  // Every screen opens at the top: scroll position never carries over from the screen before.
+  useEffect(() => {
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, left: 0 });
+  }, [location.pathname, location.search]);
   return (
     <div className="patient-layout">
       <div className="patient-column patient-frame">

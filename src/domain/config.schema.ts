@@ -340,6 +340,9 @@ export function validateConfigInvariants(config: AppConfig, contentIds: Set<stri
   if (config.freetext.ai_enabled && !config.freetext.free_text_urgency_scan) {
     problems.push('freetext: ai_enabled=true requires free_text_urgency_scan=true (FR-17, FR-61)');
   }
+  if (config.freetext.ai_enabled) {
+    problems.push('freetext: ai_enabled=true is not supported in this build (no model path; the AI-15 prefilter is not implemented). The gateway serves canned exemplars only (AI-21).');
+  }
   for (const item of config.careplan.items) {
     if (!contentIds.has(item.title_content_id)) problems.push(`care plan ${item.key}: title content ${item.title_content_id} not found`);
   }

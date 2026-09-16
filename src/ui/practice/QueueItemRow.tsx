@@ -5,7 +5,8 @@
  */
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { addMinutes } from '../../domain/clock';
+import { callByFor } from '../../domain/derive';
+import { splitRoutedNote } from '../../domain/services/freetext';
 import { acknowledgeQueueItem } from '../../domain/services';
 import type { QueueItem } from '../../domain/types';
 import { Banner, Button, Chip } from '../components';
@@ -14,13 +15,14 @@ import { usePractice } from '../shell/usePractice';
 import { patientName } from './episodeHelpers';
 import { QUEUE_STATE, RATING_LABELS, TRIGGER_LABELS, ageLabel, dueLabel, humanize } from './labels';
 import { CallbackSheet, OutreachSheet, RateSheet, ReopenSheet, ResolveSheet } from './QueueActions';
+import { FreeTextReveal } from './ScreenResultView';
 import { StaffName } from './StaffName';
 import { useStaffAction } from './useStaffAction';
 
 type SheetKind = 'resolve' | 'rate' | 'outreach' | 'callback' | 'reopen' | null;
 
 export function QueueItemRow({ item, showPatient = true }: { item: QueueItem; showPatient?: boolean }) {
-  const { state, clock, role } = useApp();
+  const { state, clock, role, config } = useApp();
   const { fmt, queueDef, staff } = usePractice();
   const { run, error } = useStaffAction();
   const [sheet, setSheet] = useState<SheetKind>(null);
@@ -30,7 +32,10 @@ export function QueueItemRow({ item, showPatient = true }: { item: QueueItem; sh
   const openCallback = Object.values(state.callbacks).find((c) => c.queue_item_id === item.id && c.occurred === null);
   const callbacks = Object.values(state.callbacks).filter((c) => c.queue_item_id === item.id);
   const ackRole = item.acknowledged_by ? staff(item.acknowledged_by)?.role ?? 'staff' : null;
-  const callBy = item.acknowledged_at ? item.resolution_target_at ?? addMinutes(item.acknowledged_at, def?.ack_target_minutes ?? 60) : null;
+  // FR-25: one computed call-by time, the same helper the patient's closing statement and coverage notice use.
+  const callBy = item.acknowledged_at ? callByFor(item, def, config.coverage, config.practice.timezone) : null;
+  // FR-17: free text carried on the item (usefulness comment, sensitive-preferences note) is revealed only through a recorded read.
+  const note = splitRoutedNote(item.note);
   const cls = ['queue-item', item.state === 'unowned' ? 'queue-item--unowned' : '', item.open_clinical_flag && item.state !== 'unowned' ? 'queue-item--flagged' : '', item.state === 'resolved' ? 'queue-item--resolved' : ''].filter(Boolean).join(' ');
 
   return (
@@ -44,7 +49,12 @@ export function QueueItemRow({ item, showPatient = true }: { item: QueueItem; sh
         {item.derived && <Chip variant="neutral" title="Derived from the clock; it disappears if the clock moves back before its trigger">derived</Chip>}
         <code className="small muted">{item.id}</code>
       </div>
-      {item.note && <p className="small" style={{ margin: '0 0 8px' }}>{item.note}</p>}
+      {note.summary && <p className="small" style={{ margin: '0 0 8px' }}>{note.summary}</p>}
+      {note.text && (
+        <div style={{ margin: '0 0 8px' }}>
+          {canAct ? <FreeTextReveal episode_id={item.episode_id} text={note.text} label="her note" /> : <span className="muted small">free text entered (not shown to this view)</span>}
+        </div>
+      )}
       <dl className="queue-item__meta">
         <div><dt>Owner</dt><dd><StaffName id={item.owner_user_id} /> <span className="muted small">({humanize(item.owner_role)}{def ? `, ${def.employer}` : ''})</span></dd></div>
         <div><dt>Created</dt><dd>{fmt(item.created_at)}</dd></div>

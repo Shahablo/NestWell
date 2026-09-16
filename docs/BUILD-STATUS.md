@@ -14,7 +14,7 @@ Run from the repository root (Windows PowerShell shown; the npm scripts are the 
 | Command | Result |
 |---|---|
 | `Set-Location D:/NestWell; npx tsc --noEmit -p tsconfig.json` | exit 0, no errors |
-| `Set-Location D:/NestWell; npx vitest run` | 21 test files, 192 tests, all passed (about 9 s) |
+| `Set-Location D:/NestWell; npx vitest run` | 23 test files, 210 tests, all passed (about 7 s) |
 | `Set-Location D:/NestWell; npx vite build` | built; `dist/` produced with the PWA service worker (12 precache entries); the only warning is the standard "chunk larger than 500 kB" notice |
 
 Runtime walk (Vite dev server, Chrome pane, desktop width): storage cleared, the default branch
@@ -92,7 +92,7 @@ test or the runtime walk; **Partial** — the named items are missing; **Not imp
 | W18 Notifications (simulated) | Implemented | Outbox materialized by the projection from check-ins, reminders and care-plan items with the neutral body only, suppression rows with reasons (paused, unsafe to message, sensitive status, Unreached open), patient inbox tagged SIMULATED. Note: there is no `MessageProvider` interface; the seam for a real provider is `services/notifications.ts` plus the projection's outbox. |
 | W19 AI gateway (canned) | Implemented | Fallback-mode gateway keyed by (feature, key) in `config/ai-exemplars.json`, AI-13/AI-14 labels, generic fallback with `ai_fallback_used`, deny-list postfilter for narratives, refusal on locked, draft or retired content (`ai_call_blocked`), canned AI-03 grouping, AI interaction log (Admin → Logs); Tamsin branches. The scan-on branch cannot change the flag at run time (FR-17 reads it from config by design), so it runs the shipped scan-off behaviour and the scan-on outcome is asserted in `tamsin.test.ts` against a config with the flag on. |
 | W20 Content tooling | Partial | Present: the claims field (`claims_checked_by`, asserted for every id the code depends on), tone-review attributes, the deny-list lints, `npm run validate`, Admin → Validation (placeholder and status lists), and the event-log export that carries the FR-17 and FR-30a flags, `ai_enabled`, versions and the content manifest hash. Missing: the FR-60a tone validator (reading level, sentence length, exclamation marks, formality), the FR-62 preview CLI, a single content-and-rules export document (FR-65). |
-| W21 Phase 2 end-to-end tests and NFR checks | Partial | Present: scenario tests for 6.4, 6.6 (both branches), 6.7 (both flag states), a determinism test per branch, the lexicon lint and the startup-failure test for `ai_enabled` without the scan, all in CI. Missing: a 6.8 branch test (script only), a CSP and network test (SR-04 — the app has no fetch, XHR or WebSocket code and no external URL, verified by search, but nothing asserts it and `index.html` sets no CSP), a repository secret scan, accessibility automation (NFR-01). |
+| W21 Phase 2 end-to-end tests and NFR checks | Partial | Present: scenario tests for 6.4, 6.6 (both branches), 6.7 (both flag states), a determinism test per branch, the lexicon lint and the startup-failure test for `ai_enabled` without the scan, all in CI. Present since the review pass: `src/domain/network.test.ts` fails on any fetch, XHR, WebSocket, sendBeacon, EventSource or external URL under `src`, and the production build injects a Content-Security-Policy limited to the application origin (`vite.config.ts`, build only because the dev server needs its HMR websocket). Missing: a 6.8 branch test (script only), a repository secret scan, accessibility automation (NFR-01). |
 | W22 Phase 2 documents, scripts and hardening | Partial | Present: admin log screens (event log, derived events, incidents, AI interactions), scripts 6.4, 6.6, 6.7, 6.8, an error boundary that keeps the banner and role switcher usable, the startup validation report, PWA install. Missing: vendor record, completed data-flow map, pilot-gate and pilot-debt files, the two dry runs. |
 
 Pilot-deferred packages P1–P10 are not started, as planned.
@@ -119,9 +119,12 @@ Domain and services (`src/domain`):
 3. FR-57: no domain command for the single mood item in a loss status; the UI composes it.
 4. Partner capacity and accepted insurance have no runtime write path (no event type).
 5. `recordDelivery` does not re-anchor care-plan due dates or visit dates set from the expected date.
-6. FR-13 as written: a `not_reached` outreach resolves the derived Unreached item at once, so a
-   second attempt before the next window closes can derive a second item; the Keisha seed logs its
-   attempts after the day-21 window closes to keep exactly one item.
+6. FR-13 as written ("until an outreach outcome is logged"; the queue's resolution is "Outreach
+   logged"): a `not_reached` outreach resolves the derived Unreached item at once and later check-ins
+   go out without reminders, so nothing prompts a second attempt until a new run of two; a second
+   attempt before the next window closes can derive a second item. The Keisha seed logs its
+   attempts after the day-21 window closes to keep exactly one item. Changing this needs a
+   requirements decision, not a code fix.
 7. After submission a check-in shows its scheduled template in the projection even when a
    sensitive status remapped later check-ins (cosmetic).
 8. `demo_session_id` is derived from wall time and is stripped in determinism assertions.
@@ -153,13 +156,27 @@ Documents and process:
     pilot-debt files, findings capture files. `docs/fda-function-inventory.md` is generated from
     the admin inventory rows and must be regenerated whenever those rows or the flags change.
 17. Config and content are JSON, not YAML and markdown (section 12 names YAML).
-18. No CSP, no network test, no secret scan, no accessibility automation (W21).
+18. No secret scan and no accessibility automation (W21). The CSP (build only) and the no-network test exist.
 19. No commit exists in this checkout, so there is no build hash and the Pages deploy has not run.
 20. Every content item is approved by a placeholder approver (`clinical-owner-placeholder`,
     `placeholder-translator`); 16 items are pending counsel review; nothing is clinically set.
 
 Housekeeping: `.claude/launch.json` carries two dev-server entries (ports 5173 and 5174) used
 during parallel builds; harmless.
+
+## Changes made in the review fix pass
+
+- Route gating follows the active view: a URL for another surface redirects to the role's home
+  instead of switching the role; the banner clock is an explicit switch to the admin clock panel.
+- A recorded loss outcome counts as the loss pathway in the patient app too (no NICU control, loss
+  framing), matching the domain's `lossPathwayActive`.
+- Practice: clinician queues open on the queue the role owns; referral state changes are
+  forward-only with no date defaulted from the clock; the ownership sheet prints the approved
+  no-answer text; the dead-end outcome form asks for the documented plan; reviewed summaries label
+  the narrative with the reviewer; patient links and preference options carry accessible names.
+- SR-04 / SR-07: the build-time CSP, the no-network test, and the lexicon lint extended to string
+  literals under `src/domain` and string values in `config` (lexicons, type unions and the verbatim
+  attributed instruments excluded).
 
 ## Changes made in the integration pass
 

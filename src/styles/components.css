@@ -662,27 +662,35 @@ a.list-row:hover {
   padding: var(--space-3);
 }
 
-.locked-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  background: var(--color-overlay);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-4);
-  overflow-y: auto;
-}
-
-.locked-overlay .locked-content {
-  width: 100%;
-  max-width: var(--patient-column);
-  background: var(--color-surface);
+/* The full-screen layout is a block placed before any other content, not a modal: the persistent help
+   button, the content below and the browser stay reachable, and no acknowledgment is required (FR-22, 6.3). */
+.locked-content--full_screen {
+  padding: var(--space-5) var(--space-4);
+  border-width: 3px;
   box-shadow: var(--shadow-lg);
+  background: var(--color-surface);
 }
 
-.locked-overlay .locked-content__body {
-  font-size: 1.05em;
+.locked-content--full_screen .locked-content__title {
+  font-size: 1.2em;
+}
+
+.locked-content--full_screen .locked-content__body {
+  font-size: 1.08em;
+}
+
+/* Dialable numbers inside locked text: 48px tap targets (ARCHITECTURE 5). */
+.phone-number__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-target);
+  padding: 0 var(--space-2);
+  margin: 0 -2px;
+  border-radius: var(--radius-sm, 6px);
+  color: var(--color-emergency);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  vertical-align: middle;
 }
 
 .locked-content__actions {
@@ -790,6 +798,15 @@ a.list-row:hover {
 .phone-number__value {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+}
+
+a.phone-number__value {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-target);
+  padding: 0 var(--space-2);
+  color: var(--color-emergency);
+  text-underline-offset: 3px;
 }
 
 /* ---- Tables ---------------------------------------------------------- */

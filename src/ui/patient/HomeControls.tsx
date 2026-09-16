@@ -57,17 +57,16 @@ export function PauseStopControls({ episode }: { episode: Episode }) {
     <Card title="Pause or stop">
       <ErrorNotice error={error} />
       {done?.kind === 'paused' && <LockedContent id="pause.confirm" layout="inline" locale={locale} vars={{ duration_label: done.label }} />}
-      {episode.paused ? (
-        <div className="stack-sm">
-          <p className="small muted">Check-ins are paused{episode.paused_until ? ` until ${fmt(episode.paused_until, { withTime: false })}` : ''}. Your contact card and I need help now are unchanged.</p>
-          <Button size="lg" block onClick={resume}>Turn check-ins back on</Button>
-        </div>
-      ) : (
-        <div className="home-grid">
-          <Button size="lg" block onClick={() => setSheet('pause')}>Pause check-ins</Button>
-          <Button size="lg" block variant="quiet" onClick={() => setSheet('stop')}>Stop the program</Button>
-        </div>
+      {episode.paused && (
+        <p className="small muted">Check-ins are paused{episode.paused_until ? ` until ${fmt(episode.paused_until, { withTime: false })}` : ''}. Your contact card and I need help now are unchanged.</p>
       )}
+      <div className="home-grid">
+        {episode.paused
+          ? <Button size="lg" block onClick={resume}>Turn check-ins back on</Button>
+          : <Button size="lg" block onClick={() => setSheet('pause')}>Pause check-ins</Button>}
+        {/* FR-13a: stopping is available from home in two taps at all times, paused or not. */}
+        <Button size="lg" block variant="quiet" onClick={() => setSheet('stop')}>Stop the program</Button>
+      </div>
       <DemoNote label="FR-13a">
         Two taps from home. A patient pause is never an Unreached signal, and a stop closes the episode as patient_withdrew with one Follow-through item to confirm her care-plan destinations. Help and contact stay.
       </DemoNote>
@@ -93,7 +92,7 @@ export function PauseStopControls({ episode }: { episode: Episode }) {
 }
 
 export function SensitiveControls({ patient, episode }: { patient: Patient; episode: Episode }) {
-  const { run, content, statuses, clock } = usePatient();
+  const { run, content, statuses, clock, lossActive } = usePatient();
   const [confirm, setConfirm] = useState<PatientControl | null>(null);
   const [pauseOffer, setPauseOffer] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -119,6 +118,8 @@ export function SensitiveControls({ patient, episode }: { patient: Patient; epis
 
   const activeSubtypes = new Set(statuses.map((s) => s.subtype));
   const controlActive = (c: PatientControl) => activeSubtypes.has(patientControlSubtype(c, episode));
+  // Under a loss (her control or a recorded outcome) nothing here mentions the baby: the NICU control is not offered.
+  const controls = CONTROLS.filter((c) => !(lossActive && c.key === 'nicu'));
 
   return (
     <Card title="If something has changed">
@@ -130,7 +131,7 @@ export function SensitiveControls({ patient, episode }: { patient: Patient; epis
         </div>
       )}
       <div className="home-grid">
-        {CONTROLS.map((c) => (
+        {controls.map((c) => (
           <Button key={c.key} size="lg" block disabled={controlActive(c.key)} onClick={() => setConfirm(c.key)}>
             {content.title(c.content_id)}{controlActive(c.key) ? ' (applied)' : ''}
           </Button>

@@ -14,6 +14,9 @@ const MH_PLAIN: Record<string, string> = {
   not_indicated: 'Not needed as part of this program.',
 };
 
+/** Plain words for the program state (never a staff workflow label). */
+const EPISODE_PLAIN: Record<string, string> = { active: 'program in progress', paused: 'check-ins paused', completed: 'program completed', closed_early: 'program stopped' };
+
 export function TransitionPage() {
   const { patient, episode, state, config, content, locale, contactVars, fmt } = usePatient();
   if (!patient || !episode) return <Navigate to="/p" replace />;
@@ -44,8 +47,8 @@ export function TransitionPage() {
           )}
         </Card>
       ) : (
-        <Card title="Not completed yet" tone="warning">
-          <p>The practice has not completed your transition page yet. Here is what is still open in your plan.</p>
+        <Card title="Being prepared" tone="warning">
+          <p>The practice is still preparing this page with you. Here is what is still open in your plan.</p>
           {openItems.length === 0 ? <p className="muted">Nothing is open.</p> : (
             <ul>{openItems.map((i) => <li key={i.id}>{content.title(i.title_content_id)}</li>)}</ul>
           )}
@@ -53,7 +56,7 @@ export function TransitionPage() {
         </Card>
       )}
       <div className="status-line">
-        <Chip>{episode.status.replace(/_/g, ' ')}</Chip>
+        <Chip>{EPISODE_PLAIN[episode.status] ?? episode.status.replace(/_/g, ' ')}</Chip>
         {episode.closed_at && <span className="small muted">closed {fmt(episode.closed_at)}</span>}
       </div>
       <LockedContent id="contact_card" layout="inline" locale={locale} vars={contactVars} />

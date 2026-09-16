@@ -88,7 +88,7 @@
     "id": "careplan.mood_checkin_explained.body",
     "locale": "en",
     "title": "Mood check-in: what it is",
-    "body": "Around day 14 you will see a short set of mood questions. They are a standard set your care team uses. They are not a diagnosis. You choose who sees the answers, and you can skip them. If the answers suggest more support could help, a clinician reviews them and may call you.",
+    "body": "Around day 14 you will see a short set of mood questions. They are a standard set your care team uses. They are not a diagnosis. You choose who sees the answers, and you can skip them. A clinician reads the answers. The screen you see after answering says by when, and whom to call if you have not heard from us.",
     "tags": ["mood"],
     "status": "approved",
     "version": "0.1.0",

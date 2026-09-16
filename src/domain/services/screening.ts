@@ -4,15 +4,16 @@
  */
 import { toMs } from '../clock';
 import type { Instrument } from '../config.schema';
-import { activeStatusesFor, roleOfActor } from '../projection';
+import { lossPathwayActive, roleOfActor } from '../projection';
 import type { AssessmentOutcome, Command, CommandContext, Id, Role, ScreenResult, SharingCategory, State } from '../types';
 import { DomainError } from './errors';
-import { isLossSubtype } from '../derive';
 import { evaluateRules } from './rules';
 import { dayNumberFor, newQueueItem, requireEpisode, requireOpenEpisode, requirePatient, staffTimeEvent, staffUserId } from './shared';
 
 export const CRITICAL_WITHHELD_NOTE = 'critical safety item positive; other results withheld at patient request; policy unconfirmed (FR-30a)';
 export const SHARING_WITHHELD_NOTICE = 'screen completed, sharing withheld';
+/** The category-neutral item note when the sharing category excludes the coordinator (FR-06). */
+export const SCREEN_COMPLETED_NOTE = 'screen completed; details for the clinician in the screening review';
 
 export interface ScoreResult { score: number; positive: boolean; critical_item_hit: boolean }
 
@@ -60,7 +61,7 @@ export function administerScreen(input: AdministerInput): Command {
     const category = patient.preferences.sharing_category;
     const shared_with = sharedWithFor(category);
     const shared = shared_with.length > 0;
-    const lossActive = activeStatusesFor(ctx.state, ep.id, ctx.now).some((s) => isLossSubtype(s.subtype));
+    const lossActive = lossPathwayActive(ctx.state, ep.id, ctx.now);
     const framing = input.framing ?? (lossActive ? 'loss_pathway' : 'standard');
     const opts = { patient_id: ep.patient_id, episode_id: ep.id };
     const screen_result_id = ctx.nextId('scr');
@@ -82,7 +83,13 @@ export function administerScreen(input: AdministerInput): Command {
     if (result.positive) {
       let nrId: Id | null = null;
       if (shared) {
-        const q = newQueueItem(ctx, { queue_key: 'needs_review', episode_id: ep.id, trigger_type: 'positive_screen', trigger_ref: screen_result_id, note: `screen at or above threshold (${instrument.short_name}); result shared with ${shared_with.join(', ')}` });
+        // FR-06 / SR-14 coordinator exclusion: the Needs-review queue is visible to both staff roles, so when the
+        // category excludes the coordinator the item itself carries nothing about the result; the clinician opens
+        // the screening review for the details.
+        const coordinatorSees = shared_with.includes('coordinator');
+        const q = coordinatorSees
+          ? newQueueItem(ctx, { queue_key: 'needs_review', episode_id: ep.id, trigger_type: 'positive_screen', trigger_ref: screen_result_id, note: `screen at or above threshold (${instrument.short_name}); result shared with ${shared_with.join(', ')}` })
+          : newQueueItem(ctx, { queue_key: 'needs_review', episode_id: ep.id, trigger_type: 'rule', trigger_ref: screen_result_id, note: SCREEN_COMPLETED_NOTE });
         events.push(q.event);
         nrId = q.id;
       }
@@ -163,6 +170,7 @@ export interface VisibleScreen {
   visible: boolean;
   score: number | null;
   positive: boolean | null;
+  critical_item_hit: boolean | null;
   items: number[] | null;
   withheld_notice: string | null;
   /** True when an admin is shown data outside the sharing category (audit view only). */
@@ -172,10 +180,10 @@ export interface VisibleScreen {
 /** SR-14 data-layer enforcement: the practice UI must call this before rendering any screen data. */
 export function visibleScreenFor(state: State, screen: ScreenResult, role: Role): VisibleScreen {
   void state;
-  const hidden = (notice: string, admin_override = false): VisibleScreen => ({ visible: false, score: null, positive: null, items: null, withheld_notice: notice, admin_override });
+  const hidden = (notice: string, admin_override = false): VisibleScreen => ({ visible: false, score: null, positive: null, critical_item_hit: null, items: null, withheld_notice: notice, admin_override });
   if (role === 'budget_owner') return hidden('item-level screening data is never shown to the budget owner');
   if (screen.declined) return hidden('screen declined');
-  const full = (admin_override: boolean): VisibleScreen => ({ visible: true, score: screen.score, positive: screen.positive, items: [...screen.item_responses], withheld_notice: null, admin_override });
+  const full = (admin_override: boolean): VisibleScreen => ({ visible: true, score: screen.score, positive: screen.positive, critical_item_hit: screen.critical_item_hit, items: [...screen.item_responses], withheld_notice: null, admin_override });
   // The admin (the founder running the demo) sees everything, always flagged as an audit-only override of the category.
   if (role === 'admin') return full(true);
   if (role === 'patient') return full(false);

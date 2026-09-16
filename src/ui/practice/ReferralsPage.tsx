@@ -49,7 +49,7 @@ export function ReferralCard({ referral, allowed, showPatient = true, consentedO
         <Chip variant={done ? 'accent' : ['appointment_missed', 'no_capacity', 'not_covered', 'declined_by_patient'].includes(referral.state) ? 'warning' : 'neutral'}>{REFERRAL_STATE_LABELS[referral.state]}</Chip>
         {referral.coverage_status === 'not_covered' && <Chip variant="warning">insurance not accepted</Chip>}
         {referral.coverage_status === 'covered' && <Chip variant="neutral">insurance accepted</Chip>}
-        {showPatient && (consentedOnly ? <strong>{fields.has('display_name') ? patient?.display_name : 'patient (name not consented)'}</strong> : <Link to={`/practice/patients/${referral.patient_id}`}><strong>{patientName(state, referral.patient_id)}</strong></Link>)}
+        {showPatient && (consentedOnly ? <strong>{fields.has('display_name') ? patient?.display_name : 'patient (name not consented)'}</strong> : <Link to={`/practice/patients/${referral.patient_id}`} aria-label={patientName(state, referral.patient_id)}><strong>{patientName(state, referral.patient_id)}</strong></Link>)}
         <span className="muted small">to {p?.name ?? referral.partner_id}</span>
         {p && !p.secured && <Placeholder label={NOT_YET_SECURED} />}
         <code className="small muted">{referral.id}</code>

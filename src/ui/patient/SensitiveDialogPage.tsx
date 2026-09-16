@@ -27,7 +27,7 @@ export function SensitiveDialogPage() {
     return (
       <PatientFrame title="Thank you">
         {done === 'not_for_now' ? <T id="sensitive.not_for_now" vars={{ contact_name: contactVars.contact_name }} /> : (
-          <Card><p>Saved. {done === 'reduced' ? 'We will be in touch less often.' : 'We continue as planned.'} You can change any of this later from home.</p></Card>
+          <Card><p>Saved. {done === 'reduced' ? 'We will be in touch less often.' : 'We continue as planned.'} You can change any of this later from your preferences.</p></Card>
         )}
         <Button variant="primary" size="lg" block to="/p">Back to home</Button>
       </PatientFrame>
@@ -37,7 +37,8 @@ export function SensitiveDialogPage() {
   if (statuses.length === 0 || patient.preferences.contact_frequency !== null) {
     return (
       <PatientFrame title="How we stay in touch">
-        <Card><p>{patient.preferences.contact_frequency !== null ? 'These choices were already made. To change them, call your named contact.' : 'This dialog appears after a sensitive status is set.'}</p></Card>
+        <Card><p>{patient.preferences.contact_frequency !== null ? 'These choices were already made. You can change the name we use, whether we mention your baby, and how often we are in touch from your preferences.' : 'This dialog appears after a sensitive status is set.'}</p></Card>
+        {patient.preferences.contact_frequency !== null && <Button block to="/p/preferences">Open preferences</Button>}
         <Button block to="/p">Back to home</Button>
       </PatientFrame>
     );

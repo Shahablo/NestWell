@@ -16,7 +16,7 @@ import { Button, Card, Chip, DemoNote, LockedContent, Placeholder } from '../com
 import { CoverageNotice } from './CoverageNotice';
 import { ErrorNotice, HelpButton, PatientFrame, T } from './PatientFrame';
 import { Choice } from './PreferencesPage';
-import { SHARING_LABELS, SHARING_ORDER, sharedWithText, usePatient } from './usePatient';
+import { SHARING_LABELS, SHARING_ORDER, ackTargetFor, sharedWithText, usePatient } from './usePatient';
 
 type Step = 'framing' | 'reask' | number | 'done';
 
@@ -40,7 +40,9 @@ export function InstrumentPage() {
   const { instrumentKey } = useParams();
   const [params] = useSearchParams();
   const navigate = useNavigate();
-  const { patient, episode, acknowledged, state, config, content, locale, contactVars, lossActive, demoParticipantMode, run } = usePatient();
+  const { patient, episode, acknowledged, state, config, content, locale, contactVars, lossActive, demoParticipantMode, run, clock, fmt } = usePatient();
+  // FR-15: the time by which a clinician reads the answers (the Needs-review target counted from now on the queue's basis).
+  const readBy = ackTargetFor(config, 'needs_review', clock);
   const [step, setStep] = useState<Step>('framing');
   const [responses, setResponses] = useState<number[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -117,7 +119,14 @@ export function InstrumentPage() {
           <LockedContent id="help_resources" layout="inline" locale={locale} vars={{ contact_phone: contactVars.contact_phone, after_hours_phone: contactVars.after_hours_phone }} />
         ) : (
           <Card>
-            <p>Your answers are saved and go to: {outcome?.moodItem ? 'your care team' : sharedWithText(category)}. A clinician reviews them and may call you. This screen does not show a score.</p>
+            <p>Your answers go to: {outcome?.moodItem ? 'your care team' : sharedWithText(category)}. This screen does not show a score.</p>
+            {/* FR-15: a promise of review names the time and carries the call-by and 911 sentences (the approved closing item). */}
+            <LockedContent
+              id="closing.pending"
+              layout="inline"
+              locale={locale}
+              vars={{ pending_what: 'Your mood answers', target_time: readBy ? fmt(readBy) : 'the next coverage window', phone: contactVars.contact_phone }}
+            />
           </Card>
         )}
         <CoverageNotice compact />
@@ -139,7 +148,7 @@ export function InstrumentPage() {
           ) : (
             <>
               <p className="small">
-                <strong>{instrument.name}</strong> ({instrument.short_name}), version {instrument.version}.
+                <strong>{instrument.name}</strong> ({instrument.short_name}).
               </p>
               <T id={framingId} vars={{ shared_with: sharedWithText(category) }} />
             </>
@@ -203,6 +212,7 @@ export function InstrumentPage() {
             className="option-btn"
             role="radio"
             aria-checked={responses[index] === i}
+            aria-label={o.label}
             onClick={() => {
               const next = [...responses.slice(0, index), i];
               setResponses(next);

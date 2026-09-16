@@ -45,6 +45,15 @@ export function resolve(input: { queue_item_id: Id; outcome: string; note?: stri
     const item = requireItem(ctx, input.queue_item_id);
     if (item.state === 'resolved') throw new DomainError('item_resolved', 'Item already resolved');
     if (!input.outcome || input.outcome.trim() === '') throw new DomainError('outcome_required', 'A queue item never closes without an outcome (FR-34, FR-45)');
+    // FR-25: an Urgent item's resolution means a contact was attempted and the outcome logged: the close references a
+    // logged contact, or the outcome itself describes the attempt.
+    if (item.queue_key === 'urgent' && !input.contact_id && !/\b(contact|call|called|reach|reached|attempt|voicemail|message|spoke|visit)/i.test(`${input.outcome} ${input.note ?? ''}`)) {
+      throw new DomainError('contact_required', 'An Urgent item closes only when a contact was attempted: choose the contact it refers to, or describe the attempt in the outcome (FR-25)');
+    }
+    // FR-33: a reopened Needs-review item for a referral dead end closes only with a documented plan.
+    if (item.trigger_type === 'referral_dead_end' && !(input.note && input.note.trim().length >= 10) && !/\bplan\b/i.test(input.outcome)) {
+      throw new DomainError('plan_required', 'A referral dead end closes only with a documented plan: write the plan in the note (FR-33)');
+    }
     const staff = staffUserId(ctx, input.staff_user_id);
     const opts = { patient_id: item.patient_id, episode_id: item.episode_id };
     const events: ReturnType<Command> = [ctx.makeEvent('queue_item_resolved', { queue_item_id: item.id, staff_user_id: staff, outcome: input.outcome, note: input.note ?? null, contact_id: input.contact_id ?? null }, opts)];
@@ -83,7 +92,8 @@ export function logOutreach(input: { queue_item_id: Id; outcome: OutreachOutcome
       contact_id = c.contact_id;
       events.push(...c.events);
     } else if (input.minutes && input.minutes > 0) {
-      events.push(staffTimeEvent(ctx, { episode_id: item.episode_id, user_id: staff, source_type: 'outreach', source_id: ctx.nextId('outreach'), minutes: input.minutes }));
+      // FR-45: the ledger row points at the Unreached item the attempt was logged on, so it can be traced.
+      events.push(staffTimeEvent(ctx, { episode_id: item.episode_id, user_id: staff, source_type: 'outreach', source_id: item.id, minutes: input.minutes }));
     }
     events.push(ctx.makeEvent('outreach_logged', { queue_item_id: item.id, episode_id: item.episode_id, outcome: input.outcome, note: input.note ?? null, barrier: input.barrier ?? null, staff_user_id: staff, contact_id }, opts));
     return events;

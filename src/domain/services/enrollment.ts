@@ -3,7 +3,7 @@
  */
 import { addDays, addHours, atLocalHour, toMs } from '../clock';
 import type { ContentIndex } from '../content';
-import { isLossSubtype } from '../derive';
+import { isLossOutcome, isLossSubtype } from '../derive';
 import { activeEpisodeFor, checkinsForEpisode } from '../projection';
 import type {
   AnyEvent, CheckinSet, CloseReason, Command, CommandContext, DeliveryOutcome, EligibilityStatus, EnrollmentPoint, Id, ISO, Locale, Patient, Preferences, Transition,
@@ -24,8 +24,7 @@ export function safetyClassStatus(content: ContentIndex, locale: Locale): { ok: 
   return { ok: missing.length === 0, missing };
 }
 
-const LOSS_OUTCOMES: readonly DeliveryOutcome[] = ['stillbirth', 'pregnancy_loss', 'neonatal_loss'];
-export const isLossOutcome = (o: DeliveryOutcome | null): boolean => o !== null && LOSS_OUTCOMES.includes(o);
+export { isLossOutcome };
 
 export function registerPatient(input: { patient: Patient }): Command {
   return (ctx) => {

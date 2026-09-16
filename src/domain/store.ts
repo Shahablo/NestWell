@@ -51,6 +51,8 @@ export interface Persisted {
   staffUserId: string | null;
   demoParticipantMode: boolean;
   demoSessionId: string;
+  /** How many events at the head of the log came from the scenario script (the rest are live actions). */
+  seededCount?: number;
 }
 
 type Listener = () => void;
@@ -64,6 +66,8 @@ export class NestWellStore {
   private staffUserId: string | null = null;
   private demoParticipantMode = false;
   private demoSessionId = 'session-0001';
+  /** Events [0, seededCount) are the scenario script; a live action may fork the script's future (see dispatch). */
+  private seededCount = 0;
   private projected: State | null = null;
   private listeners = new Set<Listener>();
   private snapshotCache: StoreSnapshot | null = null;
@@ -92,6 +96,7 @@ export class NestWellStore {
           this.staffUserId = p.staffUserId;
           this.demoParticipantMode = p.demoParticipantMode;
           this.demoSessionId = p.demoSessionId;
+          this.seededCount = typeof p.seededCount === 'number' ? Math.min(p.seededCount, this.events.length) : 0;
           this.invalidate();
           return;
         }
@@ -120,6 +125,7 @@ export class NestWellStore {
     };
     branch.run(runner);
     this.events.push(this.makeEvent('demo_session_reset', { branch: branchKey }, { type: 'admin' }, virtualNow, {}));
+    this.seededCount = this.events.length;
     this.clock = branch.clock;
     this.invalidate();
     this.persist();
@@ -146,13 +152,43 @@ export class NestWellStore {
 
   // ---- writes -------------------------------------------------------------
 
-  /** Run a command at the current clock as the current role. Returns the events appended. */
+  /**
+   * Run a command at the current clock as the current role. Returns the events appended.
+   *
+   * NFR-11: a live action forks the scripted future for the patients it touches. A scenario branch
+   * carries a persona's whole scripted history, including steps stamped after the branch's opening
+   * clock, so that moving the clock forward reveals the scripted story. Once someone acts live on a
+   * patient, her scripted events after the current clock are dropped: the live action is the story
+   * from here, and moving the clock forward never replays a seeded acknowledgment, contact or resolution
+   * over the one just performed (FR-38, FR-45). Other patients keep their scripts.
+   */
   dispatch(command: Command, actorOverride?: Actor): AnyEvent[] {
     const actor: Actor = actorOverride ?? this.currentActor();
     const appended = this.apply(command, this.clock, actor);
+    if (appended.length > 0) this.forkScriptedFuture(appended);
     this.persist();
     this.emit();
     return appended;
+  }
+
+  private forkScriptedFuture(appended: readonly AnyEvent[]): void {
+    const patients = new Set<string>();
+    const episodes = new Set<string>();
+    for (const e of appended) {
+      if (e.patient_id) patients.add(e.patient_id);
+      if (e.episode_id) episodes.add(e.episode_id);
+    }
+    if ((patients.size === 0 && episodes.size === 0) || this.seededCount === 0) return;
+    const T = Date.parse(this.clock);
+    const scripted = this.events.slice(0, this.seededCount).filter((e) => {
+      const touches = (e.patient_id !== null && patients.has(e.patient_id)) || (e.episode_id !== null && episodes.has(e.episode_id));
+      return !(touches && Date.parse(e.occurred_at) > T);
+    });
+    if (scripted.length !== this.seededCount) {
+      this.events = [...scripted, ...this.events.slice(this.seededCount)];
+      this.seededCount = scripted.length;
+      this.invalidate();
+    }
   }
 
   setClock(iso: ISO): void {
@@ -262,6 +298,7 @@ export class NestWellStore {
       staffUserId: this.staffUserId,
       demoParticipantMode: this.demoParticipantMode,
       demoSessionId: this.demoSessionId,
+      seededCount: this.seededCount,
     };
     try {
       this.storage.setItem(STORAGE_KEY, JSON.stringify(p));

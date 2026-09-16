@@ -42,8 +42,7 @@ function CarePlanItemCard({ item }: { item: CarePlanItem }) {
       {bodyId && <T id={bodyId} />}
       <p className="small muted">
         {item.due_at ? `Around ${fmt(item.due_at, { withTime: false })}. ` : ''}Owner at the practice: {QUEUE_ROLE_PLAIN[item.owner_role] ?? item.owner_role}.
-        {' '}Content {bodyId ?? item.title_content_id} v{bodyItem?.version ?? titleItem?.version ?? item.version}
-        {(titleItem?.placeholder || bodyItem?.placeholder) && <> <Placeholder /></>}
+        {titleItem?.placeholder && !bodyItem?.placeholder && <> <Placeholder /></>}
       </p>
       <ErrorNotice error={error} />
       {reword && !reword.blocked && (

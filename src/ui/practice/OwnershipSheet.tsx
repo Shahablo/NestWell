@@ -8,7 +8,7 @@ import { toCsvGeneric } from './metricsExport';
 import { StaffName } from './StaffName';
 
 export function OwnershipSheet() {
-  const { config } = useApp();
+  const { config, content } = useApp();
   const { coverageLabel, staffName } = usePractice();
   const [csv, setCsv] = useState('');
   const unassigned = config.queues.filter((q) => q.owner_user_id === null || q.backup_user_id === null).length;
@@ -29,9 +29,10 @@ export function OwnershipSheet() {
       timer_basis: q.timer_basis,
       coverage: coverageLabel(q.key),
       no_answer_content_id: q.no_answer_content_id,
+      no_answer_text: content.text(q.no_answer_content_id, { phone: config.practice.named_contact.phone }),
       placeholder: q.placeholder,
     })),
-    [config, coverageLabel, staffName],
+    [config, content, coverageLabel, staffName],
   );
   return (
     <div className="stack">
@@ -54,7 +55,7 @@ export function OwnershipSheet() {
                   <td>ack {q.ack_target_minutes} min · backup {q.backup_ack_target_minutes} min{q.resolution_target_minutes ? ` · resolve ${q.resolution_target_minutes} min` : ''}{q.open_clinical_ack_target_minutes ? ` · ${q.open_clinical_ack_target_minutes} min when flagged` : ''}</td>
                   <td>{humanize(q.timer_basis)}</td>
                   <td>{coverageLabel(q.key)}</td>
-                  <td><code className="small">{q.no_answer_content_id}</code></td>
+                  <td className="small">{content.text(q.no_answer_content_id, { phone: config.practice.named_contact.phone })}<div className="muted"><code>{q.no_answer_content_id}</code></div></td>
                 </tr>
               ))}
             </tbody>

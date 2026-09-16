@@ -25,7 +25,17 @@ export function staffLabel(ctx: CommandContext): string {
   return item && item.status === 'approved' ? item.body : ctx.config.ai_exemplars.staff_label;
 }
 
+/**
+ * AI-15 / AI-21 / SR-09: this build has no model path and no prefilter, so a config that claims live
+ * AI is refused at command time as well as at startup (config.schema.ts); canned output is never
+ * served under a "live AI" label.
+ */
+function assertFallbackMode(ctx: CommandContext): void {
+  if (ctx.config.freetext.ai_enabled) throw new DomainError('live_ai_not_implemented', 'ai_enabled=true is not supported in this build: there is no model path and the AI-15 prefilter is not implemented (AI-21)');
+}
+
 function interaction(ctx: CommandContext, feature: AiFeature, key: string, episode_id: Id | null, content_ids: string[]): { id: Id; event: AnyEvent } {
+  assertFallbackMode(ctx);
   const id = ctx.nextId('ai');
   const prompt_hash = stableHash(`${feature}|${key}|exemplars:${ctx.config.ai_exemplars.version}`);
   const ep = episode_id ? ctx.state.episodes[episode_id] : undefined;
@@ -49,13 +59,16 @@ export interface RewordResult {
 }
 
 export function rewordResult(ctx: CommandContext, input: { content_id: string; episode_id: Id | null }): RewordResult {
+  assertFallbackMode(ctx);
   const item = ctx.content.get(input.content_id);
   const ep = input.episode_id ? ctx.state.episodes[input.episode_id] : undefined;
   const opts = { patient_id: ep?.patient_id ?? null, episode_id: input.episode_id };
+  // FR-22 / AI-11: the AI layer neither reads nor emits locked content, and never serves a draft or retired item.
+  // A blocked call returns no text at all; the caller renders the approved item through LockedContent / T.
   if (!item || item.status !== 'approved' || item.locked) {
     const reason = !item ? 'missing_content' : item.locked ? 'locked_content' : `content_${item.status}`;
     return {
-      text: item && item.status === 'approved' ? item.body : '', label: '', ai_interaction_id: null, fallback: false, blocked: true,
+      text: '', label: '', ai_interaction_id: null, fallback: false, blocked: true,
       events: [ctx.makeEvent('ai_call_blocked', { feature: 'reword', episode_id: input.episode_id, reason, queue_item_id: null }, opts)],
     };
   }

@@ -12,6 +12,8 @@ import { useApp } from '../shell/useApp';
 import { usePractice } from '../shell/usePractice';
 import { episodeDay, instrumentShortName, responseLabel } from './episodeHelpers';
 import { CHECKIN_STATE_VARIANT, QUEUE_STATE, REFERRAL_STATE_LABELS, SUBTYPE_LABELS, TRIGGER_LABELS, VISIT_STATE_LABELS, humanize } from './labels';
+import { visibleScreenFor } from '../../domain/services';
+import { splitRoutedNote } from '../../domain/services/freetext';
 import { FreeTextReveal, ScreenResultView } from './ScreenResultView';
 import { StaffName } from './StaffName';
 
@@ -66,7 +68,9 @@ export function PatientTimeline({ episode }: { episode: Episode }) {
       });
     }
     for (const s of Object.values(state.screens).filter((x) => x.episode_id === ep)) {
-      out.push({ id: `sc-${s.id}`, kind: 'screen', at: s.administered_at, dateLabel: fmt(s.administered_at), tone: s.critical_item_hit ? 'danger' : s.positive ? 'warning' : 'default', title: `Screen: ${instrumentShortName(config, s.instrument_key)}`, body: <ScreenResultView screen={s} /> });
+      // SR-14: the marker tone is a read of the result, so it goes through visibleScreenFor like every other read.
+      const v = visibleScreenFor(state, s, role);
+      out.push({ id: `sc-${s.id}`, kind: 'screen', at: s.administered_at, dateLabel: fmt(s.administered_at), tone: !v.visible ? 'muted' : v.critical_item_hit ? 'danger' : v.positive ? 'warning' : 'default', title: `Screen: ${instrumentShortName(config, s.instrument_key)}`, body: <ScreenResultView screen={s} /> });
     }
     for (const a of Object.values(state.assessments).filter((x) => x.episode_id === ep)) {
       out.push({ id: `as-${a.id}`, kind: 'assessment', at: a.recorded_at, dateLabel: fmt(a.recorded_at), title: <span>Assessment: {humanize(a.outcome)}</span>, body: <div className="small">by <StaffName id={a.clinician_id} />{a.screen_result_id ? ` · linked screen ${a.screen_result_id}` : ''}{a.note ? ` · ${a.note}` : ''}</div> });
@@ -93,7 +97,9 @@ export function PatientTimeline({ episode }: { episode: Episode }) {
     }
     for (const q of Object.values(state.queueItems).filter((x) => x.episode_id === ep)) {
       const st = QUEUE_STATE[q.state];
-      out.push({ id: `qi-${q.id}`, kind: 'queue', at: q.created_at, dateLabel: fmt(q.created_at), tone: q.state === 'unowned' ? 'danger' : q.state === 'resolved' ? 'muted' : 'warning', title: <span>{config.queues.find((d) => d.key === q.queue_key)?.label ?? q.queue_key} item: {TRIGGER_LABELS[q.trigger_type] ?? humanize(q.trigger_type)} <Chip variant={st.variant}>{st.label}</Chip></span>, body: <div className="small">{q.note ?? ''}{q.resolved_at ? ` · resolved ${fmt(q.resolved_at)}: ${q.outcome}` : ''}</div> });
+      // FR-17: free text carried on the item (usefulness comment, sensitive-preferences note) is shown only after a recorded read.
+      const note = splitRoutedNote(q.note);
+      out.push({ id: `qi-${q.id}`, kind: 'queue', at: q.created_at, dateLabel: fmt(q.created_at), tone: q.state === 'unowned' ? 'danger' : q.state === 'resolved' ? 'muted' : 'warning', title: <span>{config.queues.find((d) => d.key === q.queue_key)?.label ?? q.queue_key} item: {TRIGGER_LABELS[q.trigger_type] ?? humanize(q.trigger_type)} <Chip variant={st.variant}>{st.label}</Chip></span>, body: <div className="small">{note.summary ?? ''}{q.resolved_at ? ` · resolved ${fmt(q.resolved_at)}: ${q.outcome}` : ''}{note.text && (canReadFreeText ? <FreeTextReveal episode_id={ep} text={note.text} label="her note" /> : <span className="muted"> · free text entered (not shown to this view)</span>)}</div> });
     }
     for (const s of state.sensitiveStatuses.filter((x) => x.episode_id === ep)) {
       out.push({ id: `ss-${s.subtype}-${s.set_at}`, kind: 'status', at: s.set_at, dateLabel: fmt(s.set_at), tone: 'warning', title: `Sensitive status set: ${SUBTYPE_LABELS[s.subtype]}`, body: <div className="small">set by {s.set_by}{s.confirmed_by_staff ? ' · confirmed by staff' : ' · not yet confirmed'}</div> });

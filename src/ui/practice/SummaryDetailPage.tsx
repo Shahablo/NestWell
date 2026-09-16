@@ -6,19 +6,19 @@ import { useApp } from '../shell/useApp';
 import { usePractice } from '../shell/usePractice';
 import { patientName } from './episodeHelpers';
 import { FreeTextReveal } from './ScreenResultView';
-import { StaffName } from './StaffName';
 import { SummaryStructuredView } from './SummaryStructuredView';
 import { useStaffAction } from './useStaffAction';
 
 export function SummaryDetailPage() {
   const { summaryId = '' } = useParams();
   const { state, role, content } = useApp();
-  const { fmt } = usePractice();
+  const { fmt, staffName } = usePractice();
   const { run, error } = useStaffAction();
   const summary = state.summaries[summaryId];
   if (!summary) return <EmptyState title="Unknown summary" action={<Button to="/practice/summaries">Back to summaries</Button>} />;
   const episode = state.episodes[summary.episode_id];
-  const aiLabel = content.text('ai.staff_label');
+  // AI-14: the AI label stays after review; it says who reviewed the draft once someone has (FR-41).
+  const aiLabel = summary.state !== 'draft' && summary.reviewer_id ? `AI draft, reviewed by ${staffName(summary.reviewer_id)}` : content.text('ai.staff_label');
   return (
     <div className="stack">
       <div className="row row--between">
@@ -31,7 +31,7 @@ export function SummaryDetailPage() {
       <div className="row">
         <Chip variant={summary.state === 'draft' ? 'warning' : summary.state === 'reviewed' ? 'accent' : 'neutral'}>{summary.state}</Chip>
         <span className="small">drafted {fmt(summary.created_at)}</span>
-        {summary.reviewer_id && <span className="small">· reviewed by <StaffName id={summary.reviewer_id} />{summary.reviewed_at ? ` on ${fmt(summary.reviewed_at)}` : ''}</span>}
+        {summary.reviewer_id && <span className="small">{`· reviewed by ${staffName(summary.reviewer_id)}${summary.reviewed_at ? ` on ${fmt(summary.reviewed_at)}` : ''}`}</span>}
       </div>
       {error && <Banner variant="warning">{error}</Banner>}
       {summary.withheld_notices.length > 0 && (

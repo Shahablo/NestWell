@@ -1,15 +1,17 @@
 /**
  * Check-in (FR-08–FR-17): the first screen shows the locked emergency instruction and I need help
  * now above the questions; then one item per screen; Skip item, Skip check-in, Not now and I need
- * help now stay in a bar that is visible without scrolling at 360px. Submitting with unanswered
- * items stores a partial check-in and never re-prompts. After submission the page shows any
- * full-screen locked instruction first, then the instrument offer, then the FR-15 closing statement.
+ * help now stay in a bar that is visible without scrolling at 360px. An answer on the urgent list
+ * renders the locked instruction before any other content and creates the Urgent item at once
+ * (FR-23, scenario 6.3), not when she taps Finish. Submitting with unanswered items stores a partial
+ * check-in and never re-prompts. After submission the page shows any full-screen locked instruction
+ * first, then the instrument offer, then the FR-15 closing statement.
  */
 import { useEffect, useRef, useState } from 'react';
 import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import type { CheckinItem, CheckinTemplate } from '../../domain/config.schema';
 import { dayLabel } from '../../domain/clock';
-import { notNow, openCheckin, rateUsefulness, skipCheckin, skipItem, submitCheckin, type SubmitResponse } from '../../domain/services/checkins';
+import { earlyUrgentItemFor, notNow, openCheckin, rateUsefulness, reportUrgentAnswer, skipCheckin, skipItem, submitCheckin, tagsForResponses, type SubmitResponse } from '../../domain/services/checkins';
 import { declineScreen, skipScreen } from '../../domain/services/screening';
 import type { Checkin } from '../../domain/types';
 import { Button, Card, DemoNote, LockedContent, Placeholder } from '../components';
@@ -20,6 +22,10 @@ import { ErrorNotice, HelpButton, PatientFrame, T } from './PatientFrame';
 import { pendingScreenOfferFor, usePatient } from './usePatient';
 
 type Answer = string | string[] | null;
+
+function scrollTop(): void {
+  if (typeof window !== 'undefined') window.scrollTo({ top: 0, left: 0 });
+}
 
 function CheckinBar({ onSkipItem, onSkipCheckin, onNotNow, notNowDisabled }: { onSkipItem?: () => void; onSkipCheckin: () => void; onNotNow: () => void; notNowDisabled: boolean }) {
   return (
@@ -45,7 +51,7 @@ function ItemOptions({ item, value, onChange, onAdvance, onSelect }: { item: Che
       <div className="stack">
         <div className="option-list" role="group">
           {item.options.map((o) => (
-            <button key={o.value} type="button" className="option-btn" role="checkbox" aria-checked={chosen.includes(o.value)} onClick={() => toggle(o.value)}>
+            <button key={o.value} type="button" className="option-btn" role="checkbox" aria-checked={chosen.includes(o.value)} aria-label={o.label} onClick={() => toggle(o.value)}>
               <span>{o.label}</span>
               <span className="option-btn__mark" aria-hidden="true">{chosen.includes(o.value) ? '✓' : ''}</span>
             </button>
@@ -64,6 +70,7 @@ function ItemOptions({ item, value, onChange, onAdvance, onSelect }: { item: Che
           className="option-btn"
           role="radio"
           aria-checked={value === o.value}
+          aria-label={o.label}
           onClick={() => onSelect(o.value)}
         >
           <span>{o.label}</span>
@@ -75,13 +82,16 @@ function ItemOptions({ item, value, onChange, onAdvance, onSelect }: { item: Che
 }
 
 function CheckinFlow({ checkin, template }: { checkin: Checkin; template: CheckinTemplate }) {
-  const { run, content, locale, contactVars, patient } = usePatient();
+  const { run, content, locale, contactVars, patient, state } = usePatient();
   const navigate = useNavigate();
   const [step, setStep] = useState<'intro' | number>('intro');
+  /** After an urgent answer: the locked instruction is shown before the next question (FR-23). */
+  const [urgentPause, setUrgentPause] = useState<{ next: number } | null>(null);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [freeText, setFreeText] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const opened = useRef(false);
+  const urgentReported = earlyUrgentItemFor(state, checkin.id) !== undefined;
 
   useEffect(() => {
     if (checkin.state === 'sent' && !opened.current) {
@@ -92,19 +102,46 @@ function CheckinFlow({ checkin, template }: { checkin: Checkin; template: Checki
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Each question opens at the top of the screen (no scroll carry-over between steps).
+  useEffect(() => { scrollTop(); }, [step, urgentPause]);
+
   const items = template.items;
   const submit = (finalAnswers: Record<string, Answer>) => {
     const responses: SubmitResponse[] = items.map((i) => ({ question_key: i.key, value: finalAnswers[i.key] ?? null, free_text: freeText[i.key]?.trim() || null }));
     const r = run(submitCheckin({ checkin_id: checkin.id, responses }));
     setError(r.error);
     if (r.error) return;
-    const urgent = r.events.some((e) => e.type === 'emergency_instruction_shown' && e.payload.layout === 'full_screen');
+    const urgent = urgentReported || r.events.some((e) => e.type === 'emergency_instruction_shown' && e.payload.layout === 'full_screen');
     navigate(`/p/checkin/${checkin.id}?phase=done`, { replace: true, state: { urgent } });
   };
 
   const advanceFrom = (index: number, finalAnswers: Record<string, Answer>) => {
     if (index + 1 >= items.length) submit(finalAnswers);
     else setStep(index + 1);
+  };
+
+  /**
+   * FR-23 / 6.3: an answer on the urgent list renders the locked instruction now and creates the Urgent item
+   * at once. The flow pauses on the instruction; "Continue the check-in" goes on to the next question, and the
+   * remaining questions are still hers to skip.
+   */
+  const answerAndAdvance = (index: number, item: CheckinItem, value: Answer) => {
+    const next = { ...answers, [item.key]: value };
+    setAnswers(next);
+    const urgent = value !== null && tagsForResponses(template, [{ question_key: item.key, value }]).includes('urgent_candidate');
+    if (urgent && !urgentReported) {
+      const r = run(reportUrgentAnswer({ checkin_id: checkin.id, question_key: item.key, value }));
+      setError(r.error);
+      if (!r.error) {
+        if (index + 1 >= items.length) {
+          submit(next);
+          return;
+        }
+        setUrgentPause({ next: index + 1 });
+        return;
+      }
+    }
+    advanceFrom(index, next);
   };
 
   const onSkipItem = (index: number) => {
@@ -131,7 +168,24 @@ function CheckinFlow({ checkin, template }: { checkin: Checkin; template: Checki
     <CheckinBar onSkipItem={index === undefined ? undefined : () => onSkipItem(index)} onSkipCheckin={onSkipCheckin} onNotNow={onNotNow} notNowDisabled={checkin.rescheduled_once} />
   );
 
+  if (urgentPause) {
+    return (
+      <PatientFrame>
+        <LockedContent id="emergency_instruction" layout="full_screen" locale={locale} vars={{ after_hours_phone: contactVars.after_hours_phone }} />
+        <ErrorNotice error={error} />
+        <CoverageNotice compact />
+        <p className="small">Your answer has gone to the practice as an urgent item. You can finish the rest of the check-in, skip it, or stop here.</p>
+        <Button variant="primary" size="lg" block onClick={() => { const next = urgentPause.next; setUrgentPause(null); setStep(next); }}>Continue the check-in</Button>
+        <DemoNote label="FR-23 / 6.3">
+          The urgent answer created one Urgent item and showed the locked instruction before any other content, in the middle of the check-in. When she taps Finish, the configured rule is logged as fired against this same item; no second item is created.
+        </DemoNote>
+        {bar()}
+      </PatientFrame>
+    );
+  }
+
   if (step === 'intro') {
+    const titlePlaceholder = Boolean(content.get(template.title_content_id)?.placeholder);
     return (
       <PatientFrame title={content.title(template.title_content_id)}>
         <ErrorNotice error={error} />
@@ -139,7 +193,7 @@ function CheckinFlow({ checkin, template }: { checkin: Checkin; template: Checki
         <Card>
           <T id={template.title_content_id} />
           <p className="small muted">{items.length} short questions. {template.instrument_key ? 'Then a separate set of mood questions, which you can also skip.' : ''}</p>
-          {template.placeholder && <Placeholder />}
+          {template.placeholder && !titlePlaceholder && <Placeholder />}
           <div className="card-actions">
             <Button variant="primary" size="lg" block onClick={() => setStep(0)}>Start</Button>
           </div>
@@ -178,16 +232,12 @@ function CheckinFlow({ checkin, template }: { checkin: Checkin; template: Checki
           item={item}
           value={answers[item.key] ?? null}
           onChange={(v) => setAnswers((a) => ({ ...a, [item.key]: v }))}
-          onAdvance={() => advanceFrom(index, answers)}
-          onSelect={(v) => {
-            // Single-tap answers advance immediately with the value just chosen.
-            const next = { ...answers, [item.key]: v };
-            setAnswers(next);
-            advanceFrom(index, next);
-          }}
+          onAdvance={() => answerAndAdvance(index, item, answers[item.key] ?? null)}
+          onSelect={(v) => answerAndAdvance(index, item, v)}
         />
       )}
       {!answered && !isFree && <p className="small muted">Tap an answer, or skip this item below.</p>}
+      {index > 0 && <Button variant="quiet" onClick={() => setStep(index - 1)}>Previous question</Button>}
       {patient?.preferences.locale === 'es' && content.fellBack(item.prompt_content_id) && <p className="small muted">{content.fallbackMarker()}</p>}
       {bar(index)}
     </PatientFrame>
@@ -238,6 +288,8 @@ function CheckinDone({ checkin, template }: { checkin: Checkin; template: Checki
   const thisOffer = offer && offer.checkin_id === checkin.id ? offer : null;
   const copingItem = Object.values(state.queueItems).find((q) => q.trigger_ref === checkin.id && q.queue_key === 'needs_review' && (q.trigger_type === 'coping_difficulty' || q.trigger_type === 'rule'));
 
+  useEffect(() => { scrollTop(); }, []);
+
   const setAside = () => {
     if (!episode || !thisOffer) return;
     setError(run(skipScreen({ episode_id: episode.id, instrument_key: thisOffer.instrument_key, checkin_id: checkin.id })).error);
@@ -270,7 +322,7 @@ function CheckinDone({ checkin, template }: { checkin: Checkin; template: Checki
           </DemoNote>
         </Card>
       )}
-      <ClosingStatement checkin={checkin} />
+      <ClosingStatement checkin={checkin} offerUndecided={thisOffer !== null} hideInlineInstruction={showEmergency} />
       <CoverageNotice compact />
       {template.usefulness_item && <UsefulnessCard checkin={checkin} />}
       {template.visit_preparation && (

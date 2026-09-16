@@ -73,11 +73,9 @@ export function HelpPage() {
 
   return (
     <PatientFrame title={config.practice.name}>
-      {showFull && (
-        <LockedContent id="emergency_instruction" layout="full_screen" locale={locale} vars={{ after_hours_phone: contactVars.after_hours_phone }} onClose={() => setShowFull(false)} />
-      )}
+      {/* FR-22 full-screen layout first, before any other content; nothing is required to leave it. */}
+      <LockedContent id="emergency_instruction" layout={showFull ? 'full_screen' : 'inline'} locale={locale} vars={{ after_hours_phone: contactVars.after_hours_phone }} onClose={() => setShowFull(false)} />
       <ErrorNotice error={error} />
-      <LockedContent id="emergency_instruction" layout="inline" locale={locale} vars={{ after_hours_phone: contactVars.after_hours_phone }} />
       <Card title="If this cannot wait, call now">
         <div className="stack-sm">
           <PhoneNumber label="Emergency" number="911" />
@@ -90,7 +88,7 @@ export function HelpPage() {
       <Card title={patient ? 'Request a call from the practice' : 'Help'}>
         <T id="help.screen" vars={vars} />
         {!openEpisode ? (
-          <p className="small muted">A callback request needs an enrolled persona. The numbers above work regardless.</p>
+          <p className="small muted">{episode ? 'Your program has stopped, so a callback cannot be requested here. The numbers above still work at any time.' : 'You are not enrolled yet, so a callback cannot be requested here. The numbers above still work at any time.'}</p>
         ) : !online ? (
           <LockedContent id="help.callback.offline" layout="inline" locale={locale} vars={vars} />
         ) : callbackAt || existingCallback ? (

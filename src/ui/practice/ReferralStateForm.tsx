@@ -6,7 +6,7 @@ import { Banner, Button, Field, Sheet } from '../components';
 import { useApp } from '../shell/useApp';
 import { isoToLocalInput, localInputToIso } from '../shell/timeInput';
 import { usePractice } from '../shell/usePractice';
-import { REFERRAL_STATE_LABELS } from './labels';
+import { REFERRAL_NEXT_STATES, REFERRAL_STATE_LABELS } from './labels';
 import { useStaffAction } from './useStaffAction';
 
 const CONSENT_OPTIONS = ['verbal consent recorded by staff', 'signed release on file', 'consent basis to be confirmed by counsel'];
@@ -15,11 +15,14 @@ export function ReferralStateForm({ referral, allowed, onClose }: { referral: Re
   const { clock } = useApp();
   const { timezone } = usePractice();
   const { run, error } = useStaffAction();
-  const choices = allowed.filter((s) => s !== referral.state && s !== 'created');
+  const next = REFERRAL_NEXT_STATES[referral.state] ?? [];
+  const choices = allowed.filter((s) => s !== referral.state && s !== 'created' && next.includes(s));
   const [state, setState] = useState<ReferralState>(choices[0] ?? 'closed');
   const [consent, setConsent] = useState(CONSENT_OPTIONS[0]);
   const [version, setVersion] = useState('1');
-  const [when, setWhen] = useState(() => isoToLocalInput(clock, timezone));
+  // No default date: an appointment date or kept-on date is entered by staff, never taken from the clock (FR-33).
+  const [when, setWhen] = useState('');
+  const maxInput = isoToLocalInput(clock, timezone);
   const [note, setNote] = useState('');
   const submit = () => {
     const iso = localInputToIso(when, timezone);
@@ -35,7 +38,7 @@ export function ReferralStateForm({ referral, allowed, onClose }: { referral: Re
     if (ok) onClose();
   };
   return (
-    <Sheet open title="Change referral state" onClose={onClose} footer={<><Button variant="primary" onClick={submit} disabled={choices.length === 0}>Save</Button><Button variant="quiet" onClick={onClose}>Cancel</Button></>}>
+    <Sheet open title="Change referral state" onClose={onClose} footer={<><Button variant="primary" onClick={submit} disabled={choices.length === 0 || ((state === 'appointment_scheduled' || state === 'appointment_completed') && when === '')}>Save</Button><Button variant="quiet" onClick={onClose}>Cancel</Button></>}>
       <p className="muted small">Current state: {REFERRAL_STATE_LABELS[referral.state]}. Only a kept appointment counts as completion; "sent" never renders as success (FR-33).</p>
       {error && <Banner variant="warning">{error}</Banner>}
       <Field label="New state" htmlFor="rs-state">
@@ -62,7 +65,7 @@ export function ReferralStateForm({ referral, allowed, onClose }: { referral: Re
       )}
       {state === 'appointment_completed' && (
         <Field label={`Kept on (${timezone})`} htmlFor="rs-kept" hint="The date the appointment was kept, entered by staff.">
-          <input id="rs-kept" type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} />
+          <input id="rs-kept" type="datetime-local" max={maxInput} value={when} onChange={(e) => setWhen(e.target.value)} />
         </Field>
       )}
       <Field label="Note" htmlFor="rs-note">

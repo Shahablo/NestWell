@@ -6,11 +6,25 @@ import { defineConfig as defineTestConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
+/**
+ * SR-04: the built app may talk only to its own origin. Injected at build time only, because the dev
+ * server needs its HMR websocket. Asserted by src/domain/network.test.ts.
+ */
+const CSP = "default-src 'self'; script-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'";
+const cspPlugin = {
+  name: 'nestwell-csp',
+  apply: 'build' as const,
+  transformIndexHtml(html: string): string {
+    return html.replace('<meta charset="UTF-8" />', `<meta charset="UTF-8" />\n    <meta http-equiv="Content-Security-Policy" content="${CSP}" />`);
+  },
+};
+
 // Served from GitHub Pages at https://<owner>.github.io/NestWell/ — base must match the repo name.
 const appConfig = defineConfig({
   base: '/NestWell/',
   plugins: [
     react(),
+    cspPlugin,
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icons/*.png', 'icons/*.svg'],

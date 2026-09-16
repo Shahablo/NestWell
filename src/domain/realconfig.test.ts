@@ -11,11 +11,12 @@ import { narrativeViolations } from './services/ai';
 import { submitCheckin, type SubmitResponse } from './services/checkins';
 import { enroll, registerPatient } from './services/enrollment';
 import { assertScanConsistency } from './services/freetext';
-import { helpNow } from './services/queues';
+import { acknowledge as acknowledgeQueueItem, helpNow, resolve as resolveQueueItem } from './services/queues';
+import { logContact } from './services/followthrough';
 import { CRITICAL_WITHHELD_NOTE, administerScreen } from './services/screening';
 import { setSensitivePreferences, setSensitiveStatus } from './services/sensitive';
 import { draftSummary } from './services/summaries';
-import { ADMIN, CLINICIAN, DELIVERY, PATIENT } from './testflows';
+import { ADMIN, CLINICIAN, COORD, DELIVERY, PATIENT, itemsIn } from './testflows';
 import { makePatient, makeTestContext, makeTestStore, type PatientOverrides } from './testutil';
 import type { AnyEvent, Id, RuleTag } from './types';
 
@@ -171,6 +172,13 @@ describe('shipped config and content', () => {
     const episode_id = enrolledReal(store, 'real-f', { persona_key: 'marisol' });
     store.setClock(addDays(DELIVERY, 7));
     store.dispatch(helpNow({ episode_id }), PATIENT);
+    // The exemplar describes the record it was written for (one urgent item resolved); a narrative is served only while
+    // its claims hold (AI-02), so the coordinator acknowledges, calls and closes the item against that call first.
+    const urgent = itemsIn(store, 'urgent', episode_id)[0];
+    store.setClock(addMinutes(addDays(DELIVERY, 7), 10));
+    store.dispatch(acknowledgeQueueItem({ queue_item_id: urgent.id }), COORD);
+    const call = store.dispatch(logContact({ episode_id, type: 'phone_call', outcome: 'reached; reviewed with the clinician', minutes: 12 }), COORD).find((e) => e.type === 'contact_logged');
+    store.dispatch(resolveQueueItem({ queue_item_id: urgent.id, outcome: 'contact made and outcome logged', contact_id: call && call.type === 'contact_logged' ? call.payload.contact_id : null }), COORD);
     store.setClock(addDays(DELIVERY, 63));
     const events = store.dispatch(draftSummary({ episode_id, period: 'week9' }), CLINICIAN);
     expect(of(events, 'ai_fallback_used')).toHaveLength(0);

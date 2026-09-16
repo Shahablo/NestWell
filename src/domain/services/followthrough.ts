@@ -33,7 +33,10 @@ export function setReferralState(input: { referral_id: Id; state: ReferralState;
     const opts = { patient_id: ep.patient_id, episode_id: ep.id };
     if (input.state === 'sent_to_partner' && !input.consent_basis) throw new DomainError('consent_required', 'sent_to_partner records the consent basis and version (FR-33)');
     if (input.state === 'appointment_scheduled' && !input.scheduled_for) throw new DomainError('date_required', 'appointment_scheduled needs a date');
-    const completed_at = input.state === 'appointment_completed' ? input.completed_at ?? ctx.now : input.completed_at ?? null;
+    // FR-33: completed_at is the kept-on date entered by staff; an appointment cannot have been kept after the clock.
+    if (input.state === 'appointment_completed' && !input.completed_at) throw new DomainError('date_required', 'appointment_completed needs the date the appointment was kept (FR-33)');
+    if (input.state === 'appointment_completed' && input.completed_at && Date.parse(input.completed_at) > Date.parse(ctx.now)) throw new DomainError('future_date', 'The kept-on date cannot be after the current time (FR-33)');
+    const completed_at = input.completed_at ?? null;
     const events: ReturnType<Command> = [
       ctx.makeEvent('referral_state_changed', {
         referral_id: r.id, episode_id: ep.id, state: input.state, note: input.note ?? null, consent_basis: input.consent_basis ?? null,
@@ -43,7 +46,9 @@ export function setReferralState(input: { referral_id: Id; state: ReferralState;
     ];
     if (DEAD_END_STATES.includes(input.state)) {
       const screen = r.screen_result_id ? ctx.state.screens[r.screen_result_id] : undefined;
-      if (screen && !screen.declined && (screen.positive || screen.critical_item_hit)) {
+      // One reopened item per referral: a second dead end while the first plan is still open adds nothing (FR-33).
+      const alreadyOpen = Object.values(ctx.state.queueItems).some((q) => q.trigger_type === 'referral_dead_end' && q.trigger_ref === r.id && q.state !== 'resolved');
+      if (screen && !screen.declined && (screen.positive || screen.critical_item_hit) && !alreadyOpen) {
         const q = newQueueItem(ctx, { queue_key: 'needs_review', episode_id: ep.id, trigger_type: 'referral_dead_end', trigger_ref: r.id, note: `referral ${input.state.replace(/_/g, ' ')}; an alternative plan is needed before this closes` });
         events.push(q.event, ctx.makeEvent('referral_reopened_for_plan', { referral_id: r.id, episode_id: ep.id, queue_item_id: q.id }, opts));
       }

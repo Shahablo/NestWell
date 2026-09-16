@@ -7,11 +7,11 @@
  * rules engine as `handled`, so a configured rule that documents the same routing is logged as
  * fired with the item it refers to and never creates a duplicate (FR-23 AC, FR-36a).
  */
-import { DAY, addHours, toMs } from '../clock';
+import { DAY, addHours, addMinutes, dayLabel, toMs } from '../clock';
 import type { AppConfig, CheckinTemplate, Instrument } from '../config.schema';
-import { coverageDeadline, isLossSubtype } from '../derive';
-import { activeStatusesFor, checkinsForEpisode, openQueueItemsFor } from '../projection';
-import type { AccessBarrier, AnyEvent, Checkin, CheckinResponse, Command, CommandContext, Id, RuleTag, State } from '../types';
+import { callByFor, coverageDeadline } from '../derive';
+import { checkinsForEpisode, lossPathwayActive, openQueueItemsFor } from '../projection';
+import type { AccessBarrier, AnyEvent, Checkin, CheckinResponse, Command, CommandContext, Id, ISO, QueueItem, RuleTag, State } from '../types';
 import { DomainError } from './errors';
 import { routeFreeTextEvents } from './freetext';
 import { evaluateRules, triggerTypeForRule } from './rules';
@@ -55,6 +55,36 @@ export function openCheckin(input: { checkin_id: Id }): Command {
 }
 
 export interface SubmitResponse { question_key: string; value: string | string[] | null; free_text?: string | null }
+
+/** The Urgent item an early urgent answer on this check-in created (trigger_type rule, trigger_ref the check-in), if any. */
+export function earlyUrgentItemFor(state: State, checkin_id: Id): QueueItem | undefined {
+  return Object.values(state.queueItems).find((q) => q.queue_key === 'urgent' && q.trigger_type === 'rule' && q.trigger_ref === checkin_id);
+}
+
+/**
+ * FR-23 / scenario 6.3: an urgent answer renders the locked instruction before any other content and
+ * creates the Urgent item at once, in the middle of the check-in, not when she taps Finish four
+ * screens later. The configured rule is logged as fired against this same item when the check-in is
+ * submitted (submitCheckin passes it as `handled`), so one answer is one item. Idempotent per check-in.
+ */
+export function reportUrgentAnswer(input: { checkin_id: Id; question_key: string; value: string | string[] }): Command {
+  return (ctx) => {
+    const c = requireOpenCheckin(ctx, input.checkin_id);
+    const ep = requireOpenEpisode(ctx, c.episode_id);
+    const template = ctx.config.checkins[c.template_key];
+    if (!template) throw new DomainError('unknown_template', `Unknown check-in template ${c.template_key}`);
+    const tags = tagsForResponses(template, [{ question_key: input.question_key, value: input.value }]);
+    if (!tags.includes('urgent_candidate')) throw new DomainError('not_urgent', 'The answer given carries no urgent tag');
+    if (earlyUrgentItemFor(ctx.state, c.id)) return [];
+    const opts = { patient_id: ep.patient_id, episode_id: ep.id };
+    const q = newQueueItem(ctx, { queue_key: 'urgent', episode_id: ep.id, trigger_type: 'rule', trigger_ref: c.id, note: `urgent answer on the ${dayLabel(c.day_number)} check-in (${input.question_key}), before the check-in was finished; call now`, open_clinical_flag: true });
+    return [
+      ctx.makeEvent('emergency_instruction_shown', { episode_id: ep.id, layout: 'full_screen', trigger: 'urgent_answer' }, opts),
+      q.event,
+      ctx.makeEvent('help_requested', { episode_id: ep.id, source: 'rule', lexicon_version: null, queue_item_id: q.id }, opts),
+    ];
+  };
+}
 
 /**
  * FR-16: instrument items administered in the trailing seven days plus this instrument's items
@@ -107,6 +137,13 @@ export function submitCheckin(input: { checkin_id: Id; responses: SubmitResponse
       handled['create_queue_item:needs_review:free_text'] = firstFreeTextItem;
       handled['create_queue_item:urgent:free_text'] = firstFreeTextItem;
     }
+    // An urgent answer reported mid check-in (reportUrgentAnswer) already created the Urgent item and showed the
+    // instruction; the configured rule is logged as fired against that item rather than creating a second one.
+    const early = earlyUrgentItemFor(ctx.state, c.id);
+    if (early) {
+      handled['show_emergency_instruction'] = early.id;
+      handled['create_queue_item:urgent'] = early.id;
+    }
     const answerable = template.items.filter((i) => i.response_type !== 'free_text_optional');
     const allAnswered = answerable.every((i) => {
       const v = responses.find((r) => r.question_key === i.key)?.value;
@@ -155,7 +192,7 @@ export function submitCheckin(input: { checkin_id: Id; responses: SubmitResponse
       const q = newQueueItem(ctx, { queue_key: 'needs_review', episode_id: ep.id, trigger_type: 'coping_difficulty', trigger_ref: c.id, note: 'reported difficulty coping (worst option); instrument offered now or at the next check-in', open_clinical_flag: true });
       events.push(q.event);
     }
-    const lossActive = activeStatusesFor(ctx.state, ep.id, ctx.now).some((s) => isLossSubtype(s.subtype));
+    const lossActive = lossPathwayActive(ctx.state, ep.id, ctx.now);
     const copingRuleInstrument = rules.fired.find((r) => triggerTypeForRule(r) === 'coping_difficulty' && r.action.instrument_key)?.action.instrument_key ?? null;
     const copingInstrument = copingRuleInstrument ?? template.instrument_key ?? Object.keys(ctx.config.instruments).sort()[0] ?? null;
     if ((copingWorst || copingMildTwice) && copingInstrument && !rules.screens_offered.includes(copingInstrument)) {
@@ -219,33 +256,93 @@ export function rateUsefulness(input: { episode_id: Id; week: 6 | 12; rating: nu
   };
 }
 
+export const PENDING_SCREEN_PHRASE = 'the note that you skipped the mood questions for now';
+
 export interface ClosingStatement {
   kind: 'no_follow_up' | 'pending';
   content_id: string;
   pending: string[];
-  /** Computed from the next coverage window of the Needs-review queue (FR-15). */
+  /**
+   * The call-by / read-by instant named in the pending form (FR-15, FR-25): the earliest computed
+   * call-by time of the episode's open queue items, or the Needs-review acknowledgment target counted
+   * from the submission when nothing is open but something is still pending. Never recomputed from
+   * "now" on a later screen: a promise made once keeps its time.
+   */
   target_time: string | null;
+  /** True while a screen offered with this check-in is still unanswered, set aside or undecided. */
+  screen_pending: boolean;
+}
+
+/**
+ * The instruments offered with a check-in and not yet answered: from the log when it is given
+ * (screen_offered minus screen_administered / screen_skipped / screen_declined, as the patient
+ * app derives it), otherwise re-derived from the answers and the template (the scheduled
+ * instrument, and the FR-29 coping trigger: the worst option, or the middle option twice in a
+ * row). A set-aside screen stays pending: that is what the closing statement must say.
+ */
+function screenOfferStateFor(state: State, config: AppConfig, c: Checkin, template: CheckinTemplate, events?: readonly AnyEvent[]): { pending: boolean; declined: boolean } {
+  const submitted = toMs(c.submitted_at ?? c.scheduled_at);
+  const screensAfter = Object.values(state.screens).filter((s) => s.episode_id === c.episode_id && toMs(s.administered_at) >= submitted);
+  const answered = (instrument: string): boolean => screensAfter.some((s) => s.instrument_key === instrument && !s.declined && (s.checkin_id === c.id || s.checkin_id === null));
+  const declinedAfter = (instrument: string): boolean => screensAfter.some((s) => s.instrument_key === instrument && s.declined);
+  const offered = new Set<string>();
+  if (events) {
+    for (const e of events) if (e.type === 'screen_offered' && e.payload.checkin_id === c.id) offered.add(e.payload.instrument_key);
+  } else {
+    if (template.instrument_key) offered.add(template.instrument_key);
+    const tags = tagsForResponses(template, c.responses);
+    const previous = checkinsForEpisode(state, c.episode_id).filter((x) => x.submitted_at !== null && toMs(x.scheduled_at) < toMs(c.scheduled_at)).pop();
+    const previousTags = previous ? tagsForResponses(config.checkins[previous.template_key] ?? template, previous.responses) : [];
+    const copingMildTwice = tags.includes('coping_difficulty_mild') && previousTags.includes('coping_difficulty_mild');
+    if (tags.includes('coping_difficulty') || copingMildTwice) {
+      const fromRule = config.rules.find((r) => r.trigger === 'checkin_submitted' && r.action.type === 'administer_screen' && r.action.instrument_key)?.action.instrument_key;
+      offered.add(fromRule ?? template.instrument_key ?? Object.keys(config.instruments).sort()[0] ?? '');
+    }
+  }
+  let pending = false;
+  let declined = false;
+  for (const k of offered) {
+    if (!k || answered(k)) continue;
+    if (declinedAfter(k)) declined = true;
+    else pending = true;
+  }
+  return { pending, declined };
 }
 
 /**
  * FR-15: the no-follow-up statement only when every item was answered, no free text was entered,
- * no screen was deferred, no rule fired, and no queue item is open for the episode; otherwise the
- * pending form naming what is pending and the computed target.
+ * no screen was deferred or declined, no rule fired, and no queue item is open for the episode;
+ * otherwise the pending form naming what is pending and the computed target. Pass the event log
+ * when it is at hand so rules that fired without creating an item (administer_screen, pause) count.
  */
-export function closingStatementFor(state: State, config: AppConfig, checkin_id: Id, now: string): ClosingStatement {
+export function closingStatementFor(state: State, config: AppConfig, checkin_id: Id, now: ISO, events?: readonly AnyEvent[]): ClosingStatement {
   const c = state.checkins[checkin_id];
   const template = c ? config.checkins[c.template_key] : undefined;
-  if (!c || !template) return { kind: 'pending', content_id: 'closing.pending', pending: ['this check-in'], target_time: null };
+  if (!c || !template) return { kind: 'pending', content_id: 'closing.pending', pending: ['this check-in'], target_time: null, screen_pending: false };
   const pending: string[] = [];
-  if (c.state !== 'completed') pending.push('unanswered items');
-  if (c.responses.some((r) => r.free_text !== null)) pending.push('your written note');
+  const partial = c.state !== 'completed';
+  const freeText = c.responses.some((r) => r.free_text !== null);
   const itemsForCheckin = Object.values(state.queueItems).filter((q) => q.trigger_ref === c.id || c.responses.some((r) => r.queue_item_id === q.id));
-  if (itemsForCheckin.length) pending.push('your answers');
-  if (template.instrument_key && !Object.values(state.screens).some((s) => s.checkin_id === c.id)) pending.push('the questionnaire you set aside');
-  if (openQueueItemsFor(state, c.episode_id).length) pending.push('an open item with your care team');
-  if (pending.length === 0) return { kind: 'no_follow_up', content_id: template.closing_statement_ids.no_follow_up, pending: [], target_time: null };
-  const def = config.queues.find((q) => q.key === 'needs_review');
-  const entries = config.coverage.filter((e) => e.queue_key === 'needs_review');
-  const target = def ? (def.timer_basis === 'coverage_hours' ? coverageDeadline(now, def.ack_target_minutes, entries, config.practice.timezone) : addHours(now, def.ack_target_minutes / 60)) : null;
-  return { kind: 'pending', content_id: template.closing_statement_ids.pending, pending: [...new Set(pending)], target_time: target };
+  const ruleFired = events ? events.some((e) => e.type === 'rule_fired' && e.payload.checkin_id === c.id) : false;
+  const offer = screenOfferStateFor(state, config, c, template, events);
+  const screenPending = offer.pending;
+  // Items a person will act on for her; a summary-to-review item is practice housekeeping, not a promise to her.
+  const openItems = openQueueItemsFor(state, c.episode_id).filter((q) => q.queue_key !== 'summaries');
+  const otherOpen = openItems.filter((q) => !itemsForCheckin.some((x) => x.id === q.id));
+  if (freeText) pending.push('your written note');
+  if (itemsForCheckin.length || ruleFired || offer.declined) pending.push(partial ? 'your answers so far' : 'your answers');
+  else if (partial) pending.push('your answers so far');
+  if (screenPending) pending.push(PENDING_SCREEN_PHRASE);
+  if (otherOpen.length) pending.push('an open item with your care team');
+  if (pending.length === 0) return { kind: 'no_follow_up', content_id: template.closing_statement_ids.no_follow_up, pending: [], target_time: null, screen_pending: false };
+  const tz = config.practice.timezone;
+  const callBys = openItems.map((q) => callByFor(q, config.queues.find((d) => d.key === q.queue_key), config.coverage, tz)).sort((a, b) => toMs(a) - toMs(b));
+  let target: ISO | null = callBys[0] ?? null;
+  if (target === null) {
+    const def = config.queues.find((q) => q.key === 'needs_review');
+    const from = c.submitted_at ?? now;
+    const entries = config.coverage.filter((e) => e.queue_key === 'needs_review');
+    target = def ? (def.timer_basis === 'coverage_hours' ? coverageDeadline(from, def.ack_target_minutes, entries, tz) : addMinutes(from, def.ack_target_minutes)) : null;
+  }
+  return { kind: 'pending', content_id: template.closing_statement_ids.pending, pending: [...new Set(pending)], target_time: target, screen_pending: screenPending };
 }

@@ -85,7 +85,11 @@ export function ReferralSheet({ episode, onClose }: { episode: Episode; onClose:
   const patient = state.patients[episode.patient_id];
   const p = partner(partnerId);
   const coverage = coverageStatusFor(config, partnerId, patient);
-  const screens = screensForEpisode(state, episode.id).filter((s) => !s.declined && visibleScreenFor(state, s, role).visible);
+  // SR-14: only results visible to this role can be linked, and their threshold reading comes from the gated view.
+  const screens = screensForEpisode(state, episode.id)
+    .filter((s) => !s.declined)
+    .map((s) => ({ s, view: visibleScreenFor(state, s, role) }))
+    .filter((r) => r.view.visible);
   const submit = () => {
     if (run(createReferral({ episode_id: episode.id, partner_id: partnerId, screen_result_id: screenId || null, reason: reason.trim() }))) onClose();
   };
@@ -115,7 +119,7 @@ export function ReferralSheet({ episode, onClose }: { episode: Episode; onClose:
       <Field label="Linked screen result" htmlFor="ref-screen" hint="Only results shared with your role can be linked; withheld results stay withheld (FR-06).">
         <select id="ref-screen" value={screenId} onChange={(e) => setScreenId(e.target.value)}>
           <option value="">None</option>
-          {screens.map((s) => <option key={s.id} value={s.id}>{instrumentShortName(config, s.instrument_key)} · {s.administered_at.slice(0, 10)} · {s.positive ? 'at or above threshold' : 'below threshold'}</option>)}
+          {screens.map(({ s, view }) => <option key={s.id} value={s.id}>{instrumentShortName(config, s.instrument_key)} · {s.administered_at.slice(0, 10)} · {view.positive ? 'at or above threshold' : 'below threshold'}</option>)}
         </select>
       </Field>
       <Field label="Reason" htmlFor="ref-reason" hint="Required. Goes to the partner as referral_reason (a consented field).">

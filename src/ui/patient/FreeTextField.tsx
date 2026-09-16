@@ -35,7 +35,7 @@ export function FreeTextField({ label, value, onChange, rows = 4 }: FreeTextFiel
       <label className="field__label" htmlFor={id}>{label}{/optional/i.test(label) ? null : <span className="muted"> (optional)</span>}</label>
       <T id="checkin.free_text.note" className="small muted" />
       <p className="small">
-        Who reads this: a nurse at {config.practice.name}, by {target ? fmt(target) : 'the same business day'} <Placeholder label="placeholder target" />. No program reads or answers it.
+        Who reads this: a nurse at {config.practice.name}, by {target ? fmt(target) : 'the same business day'}. No program reads or answers it. <Placeholder label="placeholder target" />
       </p>
       <textarea id={id} rows={rows} value={value} onChange={(e) => onChange(e.target.value)} />
     </div>

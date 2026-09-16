@@ -14,6 +14,15 @@ import { PatientFrame, T } from './PatientFrame';
 import { PersonaPicker } from './PersonaPicker';
 import { pendingScreenOfferFor, setCurrentPatientId, usePatient } from './usePatient';
 
+/** FR-07 / 7.10: her own words for what she chose, never a staff workflow state. */
+const STATUS_PLAIN: Record<string, string> = {
+  pregnancy_loss: 'messages about the baby are stopped',
+  stillbirth: 'messages about the baby are stopped',
+  neonatal_loss: 'messages about the baby are stopped',
+  nicu: 'milestone and celebration messages are stopped',
+  trauma: 'nothing here asks about the birth',
+};
+
 const NOT_OFFERED_PLAIN: Record<string, string> = {
   language_content_unavailable: 'The practice cannot yet offer this program in your language. Someone from the practice will call you, with an interpreter if you want one.',
   minor_policy_undefined: 'The practice has not yet decided how to offer this program to patients under 18. Someone from the practice will contact you.',
@@ -114,8 +123,8 @@ function SensitivePrompt({ patient }: { patient: Patient }) {
 }
 
 function Links({ episode }: { episode: Episode }) {
-  const { day, lossActive } = usePatient();
-  const showTransition = episode.transition !== null || episode.closed_at !== null || lossActive || (day !== null && day >= 63);
+  const { day } = usePatient();
+  const showTransition = episode.transition !== null || episode.closed_at !== null || (day !== null && day >= 63);
   return (
     <Card title="More">
       <div className="home-grid">
@@ -204,7 +213,7 @@ export function HomePage() {
       <div className="status-line">
         {episode.status === 'completed' && <Chip variant="accent">program completed</Chip>}
         {episode.paused && <Chip variant="warning">check-ins paused</Chip>}
-        {statuses.map((s) => <Chip key={s.subtype} variant="neutral">{s.subtype.replace(/_/g, ' ')} status{s.confirmed_by_staff ? '' : ' (to be confirmed)'}</Chip>)}
+        {[...new Set(statuses.map((s) => STATUS_PLAIN[s.subtype] ?? 'your choices are applied'))].map((label) => <Chip key={label} variant="neutral">{label}</Chip>)}
         {preDelivery && <Chip>before delivery</Chip>}
       </div>
       {openUrgent && <CoverageNotice />}

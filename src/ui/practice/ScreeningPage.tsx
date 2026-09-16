@@ -78,7 +78,7 @@ export function ScreeningPage() {
           {list.map(({ s, assessments, referrals, connected, items }) => (
             <div key={s.id} className="queue-item">
               <div className="queue-item__head">
-                <Link to={`/practice/patients/${s.patient_id}`}><strong>{patientName(state, s.patient_id)}</strong></Link>
+                <Link to={`/practice/patients/${s.patient_id}`} aria-label={patientName(state, s.patient_id)}><strong>{patientName(state, s.patient_id)}</strong></Link>
                 {items.map((q) => <Chip key={q.id} variant={QUEUE_STATE[q.state].variant}>{config.queues.find((d) => d.key === q.queue_key)?.label ?? q.queue_key}: {QUEUE_STATE[q.state].label}</Chip>)}
               </div>
               <ScreenResultView screen={s} />

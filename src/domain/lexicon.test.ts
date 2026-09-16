@@ -106,6 +106,31 @@ describe('lexicon lint (SR-07, FR-12, FR-15, FR-24)', () => {
     expect(hits, JSON.stringify(hits, null, 2)).toEqual([]);
   });
 
+  // SR-07: queue-item notes written by the services and config descriptions render in the UI too.
+  it('no linted term appears in any string literal under src/domain (tests and test helpers excluded)', () => {
+    // types.ts holds type unions (e.g. the visit state 'missed'), not rendered prose.
+    const excluded = /(\.test\.ts|[\\/]types\.ts|[\\/]testutil\.ts|[\\/]testflows\.ts)$/;
+    const files = walk(join(ROOT, 'src', 'domain'), (p) => p.endsWith('.ts') && !excluded.test(p));
+    expect(files.length).toBeGreaterThan(0);
+    const hits: Hit[] = [];
+    for (const file of files) hits.push(...scan(stringLiterals(readFileSync(file, 'utf8')).join('\n'), relative(ROOT, file), lexicons));
+    expect(hits, JSON.stringify(hits, null, 2)).toEqual([]);
+  });
+
+  it('no linted term appears in any string value in config (the lexicon files and the verbatim, attributed instruments excluded)', () => {
+    const files = walk(join(ROOT, 'config'), (p) => p.endsWith('.json') && !/[\\/](lexicons|instruments)[\\/]/.test(p));
+    expect(files.length).toBeGreaterThan(0);
+    const hits: Hit[] = [];
+    const strings = (v: unknown, out: string[] = []): string[] => {
+      if (typeof v === 'string') out.push(v);
+      else if (Array.isArray(v)) v.forEach((x) => strings(x, out));
+      else if (v && typeof v === 'object') Object.values(v as Record<string, unknown>).forEach((x) => strings(x, out));
+      return out;
+    };
+    for (const file of files) hits.push(...scan(strings(JSON.parse(readFileSync(file, 'utf8'))).join('\n'), relative(ROOT, file), lexicons));
+    expect(hits, JSON.stringify(hits, null, 2)).toEqual([]);
+  });
+
   it('no linted term appears in docs markdown (excluding the files that quote the deny-lists)', () => {
     const files = walk(join(ROOT, 'docs'), (p) => p.endsWith('.md') && !DOC_EXCLUSIONS.has(p.split(/[\\/]/).pop() ?? ''));
     const hits: Hit[] = [];

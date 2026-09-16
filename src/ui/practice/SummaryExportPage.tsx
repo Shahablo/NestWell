@@ -63,7 +63,7 @@ export function SummaryExportPage() {
             )}
           </>
         )}
-        <h2>Narrative {summary.ai_draft && <span className="small">({content.text('ai.staff_label')})</span>}</h2>
+        <h2>Narrative {summary.ai_draft && <span className="small">({summary.state !== 'draft' && summary.reviewer_id ? `AI draft, reviewed by ${staffName(summary.reviewer_id)}` : content.text('ai.staff_label')})</span>}</h2>
         <p className="summary-export__narrative">{summary.narrative}</p>
         <footer className="summary-export__footer">
           <div><strong>Reviewer:</strong> {summary.reviewer_id ? `${staffName(summary.reviewer_id)}${summary.reviewed_at ? `, ${fmt(summary.reviewed_at)}` : ''}` : 'not yet reviewed'}</div>

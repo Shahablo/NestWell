@@ -43,7 +43,8 @@ export function ResolveSheet({ item, onClose }: { item: QueueItem; onClose: () =
         <input id="resolve-outcome" type="text" list="resolve-outcomes" value={outcome} onChange={(e) => setOutcome(e.target.value)} />
         <datalist id="resolve-outcomes">{OUTCOME_SUGGESTIONS.map((s) => <option key={s} value={s} />)}</datalist>
       </Field>
-      <Field label="Note" htmlFor="resolve-note">
+      {item.queue_key === 'urgent' && <p className="small">FR-25: an Urgent item closes only when a contact was attempted. Choose the contact below, or describe the attempt in the outcome.</p>}
+      <Field label={item.trigger_type === 'referral_dead_end' ? 'Documented plan' : 'Note'} htmlFor="resolve-note" hint={item.trigger_type === 'referral_dead_end' ? 'Required (FR-33): the alternative plan agreed for this referral dead end.' : undefined}>
         <textarea id="resolve-note" value={note} onChange={(e) => setNote(e.target.value)} />
       </Field>
       <Field label="Contact this outcome refers to" htmlFor="resolve-contact" hint="When the minutes were logged on a contact already, choose it and no second staff_time row is created (FR-38).">
